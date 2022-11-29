@@ -22,6 +22,7 @@ namespace SistemaDeVentas
             Stock = stock;
             this.idVenta = idVenta;
         }
+        /*
         public static List<ProductoVendido> DevolverProductoVendido()
         {
             var listaProductoV = new List<ProductoVendido>();
@@ -57,14 +58,13 @@ namespace SistemaDeVentas
                         }
                     }
 
-                //}
-            }
+                           }
             catch(Exception ex)
             {
 
             }
 
             return listaProductoV;
-        }
+        }*/
     }
 }

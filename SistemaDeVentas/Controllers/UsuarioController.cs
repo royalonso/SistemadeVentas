@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-
+using SistemaDeVentas.Repositories;
 
 namespace SistemaDeVentas.Controllers
 {
@@ -12,8 +12,23 @@ namespace SistemaDeVentas.Controllers
         public IEnumerable<Usuario> Get()
         {
             List<Usuario> usuario = new List<Usuario>();
-            usuario = Usuario.DevolverUsuarios();
+            usuario = UsuarioRepository.DevolverUsuarios();
             return usuario;
+        }
+        [HttpPost]
+        public IActionResult Post()
+        {
+            return Ok();
+        }
+        [HttpDelete]
+        public IActionResult Delete()
+        {
+            return Ok();
+        }
+        [HttpPut]
+        public IActionResult Put()
+        {
+            return Ok();
         }
 
     }

@@ -20,11 +20,12 @@ namespace SistemaDeVentas
             }
             catch(Exception ex)  
             { 
+                
             }
         }
        
         
-
+        // En prueba seleccionar la cadena de conexion desde appconfig.json
         public ConexionDB(IConfiguration configuration)
         {
             _Configuration = configuration;

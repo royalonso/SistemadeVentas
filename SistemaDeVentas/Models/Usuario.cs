@@ -27,7 +27,7 @@ namespace SistemaDeVentas
             Contraseña = contrasenia;
             this.mail = mail;
         }
-        //public static List<Usuario> DevolverUsuarios()
+        /*
         public static List<Usuario> DevolverUsuarios()
         {
             var listaUsuario = new List<Usuario>();
@@ -77,7 +77,7 @@ namespace SistemaDeVentas
 
 
         }
-
+*/
 
     }
 }
