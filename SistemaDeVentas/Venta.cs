@@ -7,6 +7,7 @@ namespace SistemaDeVentas
         public int id { get; set; }
         public string Comentarios { get; set; }
 
+        //public virtual ICollection<ProductoVendido> ProductoVendido { get; set; };
         public Venta()
         {
 
@@ -19,33 +20,43 @@ namespace SistemaDeVentas
         public static List<Venta> DevolverVenta()
         {
             var listaVenta = new List<Venta>();
-            string conectionstring = @"Server=NEXTHP11\SQLEXPRESS;database=SistemaGestion;Trusted_Connection=True;";
-            var query = @"select idVenta, Comentarios from Venta";
-             using (SqlConnection conect = new SqlConnection(conectionstring))
-            //using (SqlConnection conect = new SqlConnection(conectionstring))
+            try
             {
-                using (SqlCommand comando = new SqlCommand(query, conect))
-                {
-                    conect.Open();
-                    using (SqlDataReader dr = comando.ExecuteReader())
+                string conectionstring = @"Server=NEXTHP11\SQLEXPRESS;database=SistemaGestion;Trusted_Connection=True;";
+                ConexionDB conexion = new ConexionDB();
+                SqlConnection conecta = conexion.conexionR;
+                var query = @"select id, Comentarios from Venta";
+                //using (SqlConnection conect = new SqlConnection(conectionstring))
+                
+                //{
+                    using (SqlCommand comando = new SqlCommand(query, conecta))
                     {
-                        if (dr.HasRows)
+                        conecta.Open();
+                        using (SqlDataReader dr = comando.ExecuteReader())
                         {
-                            while (dr.Read())
+                            if (dr.HasRows)
                             {
-                                var ventas = new Venta();
-                                //producto.Id = dr.GetInt16(0);
-                                ventas.id = Convert.ToInt32(dr["id"]);
-                                ventas.Comentarios = dr["Comentarios"].ToString();
-                                listaVenta.Add(ventas);
+                                while (dr.Read())
+                                {
+                                    var ventas = new Venta();
+                                    //producto.Id = dr.GetInt16(0);
+                                    ventas.id = Convert.ToInt32(dr["id"]);
+                                    ventas.Comentarios = dr["Comentarios"].ToString();
+                                    listaVenta.Add(ventas);
 
+                                }
+                                conecta.Close();
                             }
-                            conect.Close();
                         }
                     }
-                }
+
+                //}
+            }
+            catch (Exception ex)
+            {
 
             }
+ 
             return listaVenta;
         }
     }

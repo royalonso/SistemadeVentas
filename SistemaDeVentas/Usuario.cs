@@ -1,8 +1,10 @@
-﻿using System.Data.SqlClient;
+﻿using Microsoft.AspNetCore.Connections;
+using System.Data.Common;
+using System.Data.SqlClient;
 
 namespace SistemaDeVentas
 {
-    public class Usuario
+    public class Usuario :ConexionDB
     {
         public int id { get; set; }
         public string Nombre { get; set; }
@@ -25,43 +27,54 @@ namespace SistemaDeVentas
             Contraseña = contrasenia;
             this.mail = mail;
         }
+        //public static List<Usuario> DevolverUsuarios()
         public static List<Usuario> DevolverUsuarios()
         {
             var listaUsuario = new List<Usuario>();
-            string conectionstring = @"Server=NEXTHP11\SQLEXPRESS;database=SistemaGestion;Trusted_Connection=True;";
-  
-
-            var query = "SELECT ID,Nombre,Apellido,NombreUsuario,Contraseña,Mail from Usuario";
-            using (SqlConnection conect = new SqlConnection(conectionstring))
+            try
             {
- 
-                using (SqlCommand comando = new SqlCommand(query, conect))
-                {
-                    conect.Open();
-                    using (SqlDataReader dr = comando.ExecuteReader())
 
+                //string cadena = conexion.conexion;
+                ConexionDB conexion = new ConexionDB();
+                SqlConnection conecta = conexion.conexionR;
+                //string conectionstring = @"Server=NEXTHP11\SQLEXPRESS;database=SistemaGestion;Trusted_Connection=True;";
+                var query = "SELECT ID,Nombre,Apellido,NombreUsuario,Contraseña,Mail from Usuario";
+               // using (SqlConnection conect = new SqlConnection(cadena))
+                //{
+                    using (SqlCommand comando = new SqlCommand(query, conecta))
                     {
-                        if (dr.HasRows)
-                        {
-                            while (dr.Read())
-                            {
-                                var usuario = new Usuario();
-                                usuario.id = Convert.ToInt32(dr["id"]);
-                                usuario.Nombre = dr["Nombre"].ToString();
-                                usuario.Apellido = dr["Apellido"].ToString();
-                                usuario.NombreUsuario = dr["NombreUsuario"].ToString();
-                                usuario.Contraseña = dr["Contraseña"].ToString();
-                                usuario.mail = dr["Mail"].ToString();
-                                listaUsuario.Add(usuario);
+                        conecta.Open();
+                        using (SqlDataReader dr = comando.ExecuteReader())
 
+                        {
+                            if (dr.HasRows)
+                            {
+                                while (dr.Read())
+                                {
+                                    var usuario = new Usuario();
+                                    usuario.id = Convert.ToInt32(dr["id"]);
+                                    usuario.Nombre = dr["Nombre"].ToString();
+                                    usuario.Apellido = dr["Apellido"].ToString();
+                                    usuario.NombreUsuario = dr["NombreUsuario"].ToString();
+                                    usuario.Contraseña = dr["Contraseña"].ToString();
+                                    usuario.mail = dr["Mail"].ToString();
+                                    listaUsuario.Add(usuario);
+                                }
+                                conecta.Close();
                             }
-                            conect.Close();
                         }
-                    }
+                    //}
+
                 }
+                
 
             }
+            catch (Exception ex) 
+            {
+                
+            }
             return listaUsuario;
+
 
         }
 

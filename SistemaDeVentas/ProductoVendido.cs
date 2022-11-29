@@ -25,35 +25,45 @@ namespace SistemaDeVentas
         public static List<ProductoVendido> DevolverProductoVendido()
         {
             var listaProductoV = new List<ProductoVendido>();
-            string conectionstring = @"Server=NEXTHP11\SQLEXPRESS;database=SistemaGestion;Trusted_Connection=True;";
-            var query = @"select id, idProducto , Stock, idVenta from ProductoVendido";
-            //var query = @"select id, idProducto as Articulo, Stock,  idVenta from ProductoVendido";
-            using (SqlConnection conect = new SqlConnection(conectionstring))
+            try
             {
-                using (SqlCommand comando = new SqlCommand(query, conect))
-                {
-                    conect.Open();
-                    using (SqlDataReader dr = comando.ExecuteReader())
+                //string conectionstring = @"Server=NEXTHP11\SQLEXPRESS;database=SistemaGestion;Trusted_Connection=True;";
+                ConexionDB conexion = new ConexionDB();
+                SqlConnection conecta = conexion.conexionR;
+                var query = @"select id, idProducto , Stock, idVenta from ProductoVendido";
+                
+                //using (SqlConnection conect = new SqlConnection(conectionstring))
+                //{
+                    using (SqlCommand comando = new SqlCommand(query, conecta))
                     {
-                        if (dr.HasRows)
+                        conecta.Open();
+                        using (SqlDataReader dr = comando.ExecuteReader())
                         {
-                            while (dr.Read())
+                            if (dr.HasRows)
                             {
-                                var productov = new ProductoVendido();
-                                //producto.Id = dr.GetInt16(0);
-                                productov.Id = Convert.ToInt32(dr["id"]);
-                                productov.IdProducto = Convert.ToInt32(dr["idProducto"]);
-                                productov.Stock = Convert.ToInt32(dr["Stock"]);
-                                productov.idVenta = Convert.ToInt32(dr["idVenta"]); ;
-                                listaProductoV.Add(productov);
+                                while (dr.Read())
+                                {
+                                    var productov = new ProductoVendido();
+                                    //producto.Id = dr.GetInt16(0);
+                                    productov.Id = Convert.ToInt32(dr["id"]);
+                                    productov.IdProducto = Convert.ToInt32(dr["idProducto"]);
+                                    productov.Stock = Convert.ToInt32(dr["Stock"]);
+                                    productov.idVenta = Convert.ToInt32(dr["idVenta"]); ;
+                                    listaProductoV.Add(productov);
 
+                                }
+                                conecta.Close();
                             }
-                            conect.Close();
                         }
                     }
-                }
+
+                //}
+            }
+            catch(Exception ex)
+            {
 
             }
+
             return listaProductoV;
         }
     }

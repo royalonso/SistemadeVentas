@@ -7,11 +7,7 @@ namespace SistemaDeVentas.Controllers
     [Route("[controller]")]
     public class ProductoController : Controller
     {
-     /*   public IActionResult Index()
-        {
-            return View();
-        }
-     */
+     
         [HttpGet]
         public IEnumerable<Producto> Get()
         {

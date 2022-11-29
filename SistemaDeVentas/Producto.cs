@@ -26,36 +26,46 @@ namespace SistemaDeVentas
         public static List<Producto> DevolverProducto()
         {
             var listaProducto = new List<Producto>();
-            string conectionstring = @"Server=NEXTHP11\SQLEXPRESS;database=SistemaGestion;Trusted_Connection=True;";
-            var query = "SELECT id,Descripciones,Costo,PrecioVenta,Stock,idUsuario from Producto";
-            using (SqlConnection conect = new SqlConnection(conectionstring))
+            try
             {
-                using (SqlCommand comando = new SqlCommand(query, conect))
-                {
-                    conect.Open();
-                    using (SqlDataReader dr = comando.ExecuteReader())
+                //string conectionstring = @"Server=NEXTHP11\SQLEXPRESS;database=SistemaGestion;Trusted_Connection=True;";
+                ConexionDB conexion = new ConexionDB();
+                SqlConnection conecta = conexion.conexionR;
+                var query = "SELECT id,Descripciones,Costo,PrecioVenta,Stock,idUsuario from Producto";
+                //using (SqlConnection conect = new SqlConnection(conectionstring))
+                //{
+                    using (SqlCommand comando = new SqlCommand(query, conecta))
                     {
-                        if (dr.HasRows)
+                        conecta.Open();
+                        using (SqlDataReader dr = comando.ExecuteReader())
                         {
-                            while (dr.Read())
+                            if (dr.HasRows)
                             {
-                                var producto = new Producto();
-                                //producto.Id = dr.GetInt16(0);
-                                producto.Id = Convert.ToInt32(dr["id"]);
-                                producto.Descripcion = dr["Descripciones"].ToString();
-                                producto.Costo = Convert.ToDecimal(dr["Costo"]);
-                                producto.PrecioVenta = Convert.ToDecimal(dr["PrecioVenta"]);
-                                producto.Stock = Convert.ToInt32(dr["Stock"]);
-                                producto.idUsuario = Convert.ToInt32(dr["idUsuario"]); ;
-                                listaProducto.Add(producto);
+                                while (dr.Read())
+                                {
+                                    var producto = new Producto();
+                                    producto.Id = Convert.ToInt32(dr["id"]);
+                                    producto.Descripcion = dr["Descripciones"].ToString();
+                                    producto.Costo = Convert.ToDecimal(dr["Costo"]);
+                                    producto.PrecioVenta = Convert.ToDecimal(dr["PrecioVenta"]);
+                                    producto.Stock = Convert.ToInt32(dr["Stock"]);
+                                    producto.idUsuario = Convert.ToInt32(dr["idUsuario"]); ;
+                                    listaProducto.Add(producto);
 
+                                }
+                                conecta.Close();
                             }
-                            conect.Close();
                         }
                     }
-                }
+
+                //}
 
             }
+            catch (Exception ex)
+            {
+
+            }
+           
             return listaProducto;
         }
     }
