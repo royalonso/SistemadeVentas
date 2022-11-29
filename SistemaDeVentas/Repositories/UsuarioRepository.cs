@@ -40,7 +40,7 @@ namespace SistemaDeVentas.Repositories
                             conecta.Close();
                         }
                     }
-                    //}
+                    
 
                 }
 

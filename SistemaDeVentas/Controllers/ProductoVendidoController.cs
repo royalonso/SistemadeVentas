@@ -8,11 +8,11 @@ namespace SistemaDeVentas.Controllers
     {
         
         [HttpGet]
-        public IEnumerable<ProductoVendido> Get()
+        public IActionResult GET()                                           //public IEnumerable<ProductoVendido> Get()
         {
             List<ProductoVendido> productv = new List<ProductoVendido>();
             productv = ProductoVendidoRepository.DevolverProductoVendido();
-            return productv;
+            return Ok(productv);                                              //return Ok;
         }
         [HttpPost]
         public IActionResult Post()

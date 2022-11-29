@@ -9,11 +9,11 @@ namespace SistemaDeVentas.Controllers
     {
         
         [HttpGet]
-        public IEnumerable<Usuario> Get()
+        public IActionResult GET()                                     //public IEnumerable<Usuario> Get()
         {
             List<Usuario> usuario = new List<Usuario>();
             usuario = UsuarioRepository.DevolverUsuarios();
-            return usuario;
+            return Ok(usuario);                                       // return usuario;
         }
         [HttpPost]
         public IActionResult Post()

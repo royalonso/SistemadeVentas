@@ -8,12 +8,12 @@ namespace SistemaDeVentas.Controllers
     public class ProductoController : Controller
     {
      
-        [HttpGet]
-        public IEnumerable<Producto> Get()
+        [HttpGet]      
+        public IActionResult GET()                                 //public IEnumerable<Producto> Get()
         {
           List<Producto> products = new List<Producto>();
             products = ProductoRepository.DevolverProducto();
-            return products;
+            return Ok(products);                                  // return products
         }
         [HttpPost]
         public IActionResult Post()
