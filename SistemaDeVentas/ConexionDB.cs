@@ -11,14 +11,25 @@ namespace SistemaDeVentas
         public SqlConnection conexionR;
         private string cadenadeConexionR = @"Server=NEXTHP11\SQLEXPRESS;database=SistemaGestion;Trusted_Connection=True;";
         public IConfiguration _Configuration;
+        public string b { get; set; }
+        
+        public ConexionDB(IConfiguration configuration)
+           
+        {
+            _Configuration = configuration;
+            //conexion = _Configuration["ConnectionString:CadenaConexionSQL"];
+            //conexionR = new SqlConnection(conexion);
+        }
         public ConexionDB()
         {
             try
             {
-                conexion = @"Server=NEXTHP11\SQLEXPRESS;database=SistemaGestion;Trusted_Connection=True;";
+                
                 //conexion = _Configuration["ConnectionString:CadenaConexionSQL"];
+                //b = _Configuration.GetValue<string>("ConnectionString");
+                conexion = @"Server=NEXTHP11\SQLEXPRESS;database=SistemaGestion;Trusted_Connection=True;";
                 conexionR = new SqlConnection(conexion);
-               
+                
             }
             catch(Exception ex)  
             {
@@ -28,12 +39,7 @@ namespace SistemaDeVentas
        
         
         // En prueba seleccionar la cadena de conexion desde appconfig.json
-        public ConexionDB(IConfiguration configuration)
-        {
-            _Configuration = configuration;
-             conexion = _Configuration["ConnectionString:CadenaConexionSQL"];
-             conexionR = new SqlConnection(conexion);
-        }
+
         
         
                     
