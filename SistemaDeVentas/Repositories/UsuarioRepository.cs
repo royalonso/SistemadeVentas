@@ -1,4 +1,5 @@
-﻿using System.Data.SqlClient;
+﻿using System.Data;
+using System.Data.SqlClient;
 
 namespace SistemaDeVentas.Repositories
 {
@@ -11,13 +12,9 @@ namespace SistemaDeVentas.Repositories
             try
             {
 
-                //string cadena = conexion.conexion;
-                //string conectionstring = @"Server=NEXTHP11\SQLEXPRESS;database=SistemaGestion;Trusted_Connection=True;";
                 ConexionDB conexion = new ConexionDB();
                 SqlConnection conecta = conexion.conexionR;            
                 var query = "SELECT ID,Nombre,Apellido,NombreUsuario,Contraseña,Mail from Usuario";
-                // using (SqlConnection conect = new SqlConnection(cadena))
-                //{
                 using (SqlCommand comando = new SqlCommand(query, conecta))
                 {
                     conecta.Open();
@@ -52,6 +49,27 @@ namespace SistemaDeVentas.Repositories
             }
             return listaUsuario;
 
+
+        }
+        public bool EliminarUsuario(int id)
+        {
+            try
+            {
+                int filaseliminadas = 0;
+                ConexionDB conexion = new ConexionDB();
+                SqlConnection conecta = conexion.conexionR;
+                var query = @"DELETE from Usuario where id = @id";
+                SqlCommand comando = new SqlCommand(query, conecta);
+                conecta.Open();
+                comando.Parameters.Add(new SqlParameter("id", SqlDbType.Int) { Value = id });
+                filaseliminadas = comando.ExecuteNonQuery();
+                conecta.Close();
+                return filaseliminadas > 0;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
 
         }
 

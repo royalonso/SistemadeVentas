@@ -3,10 +3,10 @@ using SistemaDeVentas.Repositories;
 namespace SistemaDeVentas.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/vRA1/[controller]")]
     public class ProductoVendidoController : Controller
     {
-        
+        private ProductoVendidoRepository repository = new ProductoVendidoRepository();
         [HttpGet]
         public IActionResult GET()                                           //public IEnumerable<ProductoVendido> Get()
         {
@@ -20,9 +20,19 @@ namespace SistemaDeVentas.Controllers
             return Ok();
         }
         [HttpDelete]
-        public IActionResult Delete()
+        public IActionResult Delete([FromBody] int id)
         {
-            return Ok();
+            //bool borradoPV = new ProductoVendidoRepository().EliminarProductoVendido(id);
+            bool borradoPV = repository.EliminarProductoVendido(id);
+            if (borradoPV)
+            {
+                return Ok();
+            }
+            else
+            {
+                return NotFound();
+            }
+
         }
         [HttpPut]
         public IActionResult Put()

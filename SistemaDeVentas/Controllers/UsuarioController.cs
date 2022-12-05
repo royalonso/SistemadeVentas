@@ -4,10 +4,10 @@ using SistemaDeVentas.Repositories;
 namespace SistemaDeVentas.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/vRA1/[controller]")]
     public class UsuarioController : Controller
     {
-        
+        private UsuarioRepository repository = new UsuarioRepository();
         [HttpGet]
         public IActionResult GET()                                     //public IEnumerable<Usuario> Get()
         {
@@ -21,9 +21,19 @@ namespace SistemaDeVentas.Controllers
             return Ok();
         }
         [HttpDelete]
-        public IActionResult Delete()
+        public IActionResult Delete([FromBody] int id)
         {
-            return Ok();
+            //bool borrado = new UsuarioRepository().EliminarUsuario(id);
+            bool borrado = repository.EliminarUsuario(id);  
+            if (borrado)
+            {
+                return Ok();
+            }
+            else
+            {
+                return NotFound();
+            }
+
         }
         [HttpPut]
         public IActionResult Put()

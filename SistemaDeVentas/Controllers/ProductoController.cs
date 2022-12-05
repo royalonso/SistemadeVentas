@@ -1,34 +1,76 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SistemaDeVentas.Repositories;
 
+
 namespace SistemaDeVentas.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/vRA1/[controller]")]
     public class ProductoController : Controller
+        
     {
-     
+        private ProductoRepository repository = new ProductoRepository();
         [HttpGet]      
-        public IActionResult GET()                                 //public IEnumerable<Producto> Get()
+        public ActionResult GET()                                 //public IEnumerable<Producto> Get()
         {
           List<Producto> products = new List<Producto>();
             products = ProductoRepository.DevolverProducto();
             return Ok(products);                                  // return products
         }
         [HttpPost]
-        public IActionResult Post()
+        public ActionResult Post([FromBody] Producto producto)
         {
-            return Ok();
+            try
+            {
+                bool p = new ProductoRepository().CrearProducto(producto);
+                
+                return Ok();
+            }
+            catch(Exception ex)
+            {
+             return Problem(ex.Message); 
+            }
+ 
+            
         }
         [HttpDelete]
-        public IActionResult Delete()
+        public ActionResult Delete([FromBody]int id)
         {
-            return Ok();
+            bool borradoPV = repository.EliminarProductoVendido(id);   // Borro productos vendidos antes de borrar un producto
+            bool borrado = repository.EliminarProducto(id);
+            if (borrado) 
+            {
+                return Ok();
+            }
+            else
+            {
+                return NotFound();
+            }
+          
         }
+
         [HttpPut]
-        public IActionResult Put()
+        public ActionResult<Producto> Put(long id, [FromBody] Producto ProdProductoAActualizar)
         {
-            return Ok();
+            try
+            {
+                Producto? productoActualizado = repository.ActualizarProducto(id, ProdProductoAActualizar);
+            if(productoActualizado!= null)
+                {
+                    return Ok(productoActualizado);
+                }
+                else
+                {
+                    return NotFound("El producto no fue encontrado");
+                }
+            
+            }
+            catch (Exception ex)
+            {
+                return Problem(ex.Message);
+            }
+
+            
         }
     }
 }

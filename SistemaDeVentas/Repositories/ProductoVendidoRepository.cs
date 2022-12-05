@@ -1,4 +1,5 @@
-﻿using System.Data.SqlClient;
+﻿using System.Data;
+using System.Data.SqlClient;
 
 namespace SistemaDeVentas.Repositories
 {
@@ -47,6 +48,28 @@ namespace SistemaDeVentas.Repositories
             }
 
             return listaProductoV;
+        }
+
+        public bool EliminarProductoVendido(int id)
+        {
+            try
+            {
+                int filaseliminadas = 0;
+                ConexionDB conexion = new ConexionDB();
+                SqlConnection conecta = conexion.conexionR;
+                var query = @"DELETE from ProductoVendido where id = @id";
+                SqlCommand comando = new SqlCommand(query, conecta);
+                conecta.Open();
+                comando.Parameters.Add(new SqlParameter("id", SqlDbType.Int) { Value = id });
+                filaseliminadas = comando.ExecuteNonQuery();
+                conecta.Close();
+                return filaseliminadas > 0;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+
         }
     }
 }

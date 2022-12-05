@@ -3,10 +3,10 @@ using SistemaDeVentas.Repositories;
 namespace SistemaDeVentas.Controllers
 {
     [ApiController]
-    [Route("[controller]")] /// [Route("[controller]/[action]")] si quiero agregar otro get por ejemplo
+    [Route("api/vRA1/[controller]")] /// [Route("[controller]/[action]")] si quiero agregar otro get por ejemplo
     public class VentaController : Controller
     {
-        
+        private VentaRepository repository = new VentaRepository();
         [HttpGet]
         public IActionResult GET()                            //public IEnumerable<Venta> Get()
         {
@@ -20,9 +20,18 @@ namespace SistemaDeVentas.Controllers
          return Ok(); 
         }        
         [HttpDelete]
-        public IActionResult Delete()
+        public IActionResult Delete([FromBody] int id)
         {
-            return Ok();
+            bool borrado = new VentaRepository().EliminarVenta(id);
+            if (borrado)
+            {
+                return Ok();
+            }
+            else
+            {
+                return NotFound();
+            }
+
         }
         [HttpPut]
         public IActionResult Put() 

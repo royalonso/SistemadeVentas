@@ -12,7 +12,7 @@ namespace SistemaDeVentas
         private string cadenadeConexionR = @"Server=NEXTHP11\SQLEXPRESS;database=SistemaGestion;Trusted_Connection=True;";
         public IConfiguration _Configuration;
         public string b { get; set; }
-        
+        // En prueba seleccionar la cadena de conexion desde appconfig.json
         public ConexionDB(IConfiguration configuration)
            
         {
@@ -33,12 +33,12 @@ namespace SistemaDeVentas
             }
             catch(Exception ex)  
             {
-                
+                throw new Exception("No se pudo establecer la conexion al Servidor");
             }
         }
        
         
-        // En prueba seleccionar la cadena de conexion desde appconfig.json
+        
 
         
         

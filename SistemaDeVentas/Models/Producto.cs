@@ -1,4 +1,6 @@
-﻿using System.Data.SqlClient;
+﻿using System.Data;
+using System.Data.SqlClient;
+using SistemaDeVentas.Repositories;
 namespace SistemaDeVentas
 {
     public class Producto
@@ -8,7 +10,7 @@ namespace SistemaDeVentas
         public decimal Costo { get; set; } = decimal.Zero;
         public decimal PrecioVenta { get; set; } = decimal.Zero;
         public int Stock { get; set; } = int.MaxValue;
-        public int idUsuario { get; set; } = 1;
+        public int idUsuario { get; set; } = 0;
 
         public Producto()
         {
@@ -23,6 +25,6 @@ namespace SistemaDeVentas
             Stock = stock;
             this.idUsuario = idUsuario;
         }
-        
-    }
+
+     }
 }

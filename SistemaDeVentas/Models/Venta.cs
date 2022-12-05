@@ -7,7 +7,7 @@ namespace SistemaDeVentas
         public int id { get; set; }
         public string Comentarios { get; set; }
 
-        //public virtual ICollection<ProductoVendido> ProductoVendido { get; set; };
+        
         public Venta()
         {
 
