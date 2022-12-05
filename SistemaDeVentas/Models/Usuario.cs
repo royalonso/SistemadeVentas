@@ -4,7 +4,7 @@ using System.Data.SqlClient;
 
 namespace SistemaDeVentas
 {
-    public class Usuario :ConexionDB
+    public class Usuario 
     {
         public int id { get; set; }
         public string Nombre { get; set; }

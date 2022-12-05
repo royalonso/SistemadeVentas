@@ -51,6 +51,7 @@ namespace SistemaDeVentas.Repositories
 
 
         }
+        // HttpDelete
         public bool EliminarUsuario(int id)
         {
             try
@@ -71,6 +72,109 @@ namespace SistemaDeVentas.Repositories
                 throw;
             }
 
+        }
+        // HttpPUT
+        public Usuario ActualizarUsuario(int id, Usuario usuarioAActualizar)
+        {
+            ConexionDB conexion = new ConexionDB();
+            SqlConnection conecta = conexion.conexionR;
+            usuarioAActualizar.id = id;
+            Usuario usuario = obtenerUsuario(usuarioAActualizar.id);
+            List<string> CamposAActualizar = new List<string>();
+            if (usuario.Apellido != usuarioAActualizar.Apellido && !string.IsNullOrEmpty(usuarioAActualizar.Apellido))
+            {
+                CamposAActualizar.Add("Apellido = @apellido");
+                usuario.Apellido = usuarioAActualizar.Apellido;
+            }
+            if (usuario.Nombre != usuario.Nombre && !string.IsNullOrEmpty(usuarioAActualizar.Nombre))
+            {
+                CamposAActualizar.Add("Nombre = @nombre");
+                usuario.Nombre = usuarioAActualizar.Nombre;
+            }
+            if (usuario.NombreUsuario != usuarioAActualizar.NombreUsuario && !string.IsNullOrEmpty(usuarioAActualizar.NombreUsuario))
+            {
+                CamposAActualizar.Add("NombreUsuario = @nombreusuario");
+                usuario.NombreUsuario    = usuarioAActualizar.NombreUsuario;
+            }
+            if (usuario.Contraseña != usuarioAActualizar.Contraseña && !string.IsNullOrEmpty(usuarioAActualizar.Contraseña))
+            {
+                CamposAActualizar.Add("Contraseña= @contraseña");
+                usuario.Contraseña = usuarioAActualizar.Contraseña;
+            }
+            if (usuario.mail != usuarioAActualizar.mail && !string.IsNullOrEmpty(usuarioAActualizar.mail))
+            {
+                CamposAActualizar.Add("Mail= @mail");
+                usuario.mail = usuarioAActualizar.mail;
+            }
+            if (CamposAActualizar.Count == 0)
+            {
+                throw new Exception("No hay Productos para Actualizar");
+            }
+            conecta.Open();
+            var query = $"UPDATE Usuario SET {String.Join(" ,", CamposAActualizar)} WHERE id = @id";
+            //using SqlCommand comando = new SqlCommand($"UPDATE Producto SET{String.Join(" ,", CamposAActualizar)} WHERE ID = @id",conecta);
+            using SqlCommand comando = new SqlCommand(query, conecta);
+
+            comando.Parameters.Add(new SqlParameter("Apellido", SqlDbType.VarChar) { Value = usuarioAActualizar.Apellido });
+            comando.Parameters.Add(new SqlParameter("Nombre", SqlDbType.VarChar) { Value = usuarioAActualizar.Nombre });
+            comando.Parameters.Add(new SqlParameter("NombreUsuario", SqlDbType.VarChar) { Value = usuarioAActualizar.NombreUsuario });
+            comando.Parameters.Add(new SqlParameter("Contraseña", SqlDbType.VarChar) { Value = usuarioAActualizar.Contraseña });
+            comando.Parameters.Add(new SqlParameter("Mail", SqlDbType.VarChar) { Value = usuarioAActualizar.mail });
+            comando.Parameters.Add(new SqlParameter("id", SqlDbType.BigInt) { Value = usuarioAActualizar.id });
+            comando.ExecuteNonQuery();
+            conecta.Close();
+
+
+            return usuario;
+
+        }
+
+        public Usuario? obtenerUsuario(int id)
+        {
+            ConexionDB conexion = new ConexionDB();
+            SqlConnection conecta = conexion.conexionR;
+            try
+            {
+                using (SqlCommand cmd = new SqlCommand("SELECT * FROM usuario WHERE id = @id", conecta))
+                {
+                    conecta.Open();
+                    cmd.Parameters.Add(new SqlParameter("id", SqlDbType.BigInt) { Value = id });
+                    using (SqlDataReader dr = cmd.ExecuteReader())
+                    {
+                        if (dr.HasRows)
+                        {
+                            dr.Read();
+                            Usuario usuario = obtenerUsuariodr(dr);
+                            return usuario;
+                        }
+                        else
+                        {
+                            return null;
+                        }
+                    }
+                }
+            }
+            catch
+            {
+                return null;
+                throw;
+            }
+            finally
+            {
+                conecta.Close();
+            }
+        }
+        private Usuario obtenerUsuariodr(SqlDataReader dr)
+        {
+
+            Usuario usuario = new Usuario();
+            usuario.id = int.Parse(dr["Id"].ToString());
+            usuario.Apellido= dr["Apellido"].ToString();
+            usuario.Nombre = dr["Nombre"].ToString();
+            usuario.NombreUsuario = dr["NombreUsuario"].ToString();
+            usuario.mail = dr["mail"].ToString();
+            usuario.Contraseña = dr["contraseña"].ToString();
+            return usuario;
         }
 
     }

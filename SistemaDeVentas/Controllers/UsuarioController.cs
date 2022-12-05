@@ -36,9 +36,27 @@ namespace SistemaDeVentas.Controllers
 
         }
         [HttpPut]
-        public IActionResult Put()
+        public ActionResult<Usuario> Put(int id, [FromBody] Usuario usuarioAActualizar)
         {
-            return Ok();
+            try
+            {
+                Usuario? usuarioActualizado = repository.ActualizarUsuario(id, usuarioAActualizar);
+                if (usuarioActualizado != null)
+                {
+                    return Ok(usuarioActualizado);
+                }
+                else
+                {
+                    return NotFound("El producto no fue encontrado");
+                }
+
+            }
+            catch (Exception ex)
+            {
+                return Problem(ex.Message);
+            }
+
+
         }
 
     }

@@ -101,7 +101,7 @@ namespace SistemaDeVentas.Repositories
                 var query = @"INSERT INTO Producto(Descripciones,Costo,PrecioVenta,Stock,IdUsuario) VALUES(@Descripcion,@Costo,@PrecioVenta,@Stock,@idUsuario)";
                 SqlCommand comando = new SqlCommand(query, conecta);
                 conecta.Open();
-                comando.Parameters.Add(new SqlParameter("Descripcion", SqlDbType.VarChar) { Value = producto.Descripcion });
+                comando.Parameters.Add(new SqlParameter("Descripciones", SqlDbType.VarChar) { Value = producto.Descripcion });
                 comando.Parameters.Add(new SqlParameter("Costo", SqlDbType.Float) { Value = producto.Costo });
                 comando.Parameters.Add(new SqlParameter("PrecioVenta", SqlDbType.Float) { Value = producto.PrecioVenta });
                 comando.Parameters.Add(new SqlParameter("Stock", SqlDbType.Int) { Value = producto.Stock });
@@ -115,51 +115,58 @@ namespace SistemaDeVentas.Repositories
                 throw new Exception("No se pudo Insertar el Producto");
             }
         }
-        public Producto ActualizarProducto(long id, Producto ProductoAActualizar) 
+        public Producto ActualizarProducto(int id, Producto ProductoAActualizar) 
         {
             ConexionDB conexion = new ConexionDB();
             SqlConnection conecta = conexion.conexionR;
+            ProductoAActualizar.Id = id;
             Producto producto = obtenerProducto(ProductoAActualizar.Id);
             List<string> CamposAActualizar = new List<string>();
-            if (producto.Descripcion != ProductoAActualizar.Descripcion)
+            if (producto.Descripcion != ProductoAActualizar.Descripcion && !string.IsNullOrEmpty(ProductoAActualizar.Descripcion));
             {
-                CamposAActualizar.Add("descripcion = @descripcion");
+                CamposAActualizar.Add("Descripciones = @descripcion");
+                producto.Descripcion = ProductoAActualizar.Descripcion;
             }
-            if (producto.Costo != ProductoAActualizar.Costo)
+            if (producto.Costo != ProductoAActualizar.Costo && ProductoAActualizar.Costo >0)
             {
                 CamposAActualizar.Add("Costo = @costo");
+                producto.Costo = ProductoAActualizar.Costo;
             }
-            if (producto.PrecioVenta != ProductoAActualizar.PrecioVenta)
+            if (producto.PrecioVenta != ProductoAActualizar.PrecioVenta && ProductoAActualizar.PrecioVenta > 0)
             {
                 CamposAActualizar.Add("precioventa = @precioventa");
+                producto.PrecioVenta = ProductoAActualizar.PrecioVenta;
             }
-            if (producto.Stock != ProductoAActualizar.Stock)
+            if (producto.Stock != ProductoAActualizar.Stock && ProductoAActualizar.Stock > 0)
             {
                 CamposAActualizar.Add("stock = @stock");
+                producto.Stock = ProductoAActualizar.Stock;
             }
-            if(CamposAActualizar.Count == 0)
+            if (producto.idUsuario != ProductoAActualizar.idUsuario && ProductoAActualizar.idUsuario > 0)
+            {
+                CamposAActualizar.Add("idusuario = @idusuario");
+                producto.Stock = ProductoAActualizar.Stock;
+            }
+            if (CamposAActualizar.Count == 0)
             {
                 throw new Exception("No hay Productos para Actualizar");
             }
             conecta.Open();
-            using SqlCommand comando = new SqlCommand($"UPDATE Producto SET{String.Join(" ,", CamposAActualizar)} WHERE ID = " + ProductoAActualizar.Id);
-           if (comando.Parameters.Count != 0)
-            {
+            var query = $"UPDATE Producto SET {String.Join(" ,", CamposAActualizar)} WHERE id = @id";
+            //using SqlCommand comando = new SqlCommand($"UPDATE Producto SET{String.Join(" ,", CamposAActualizar)} WHERE ID = @id",conecta);
+            using SqlCommand comando = new SqlCommand(query, conecta);
+
                 comando.Parameters.Add(new SqlParameter("Descripcion", SqlDbType.VarChar) { Value = ProductoAActualizar.Descripcion });
                 comando.Parameters.Add(new SqlParameter("Costo", SqlDbType.Float) { Value = ProductoAActualizar.Costo });
                 comando.Parameters.Add(new SqlParameter("PrecioVenta", SqlDbType.Float) { Value = ProductoAActualizar.PrecioVenta });
                 comando.Parameters.Add(new SqlParameter("Stock", SqlDbType.Int) { Value = ProductoAActualizar.Stock });
-                comando.Parameters.Add(new SqlParameter("IdUsuario", SqlDbType.BigInt) { Value = ProductoAActualizar.idUsuario });
+                comando.Parameters.Add(new SqlParameter("id", SqlDbType.BigInt) { Value = ProductoAActualizar.Id });
+                comando.Parameters.Add(new SqlParameter("idUsuario", SqlDbType.BigInt) { Value = ProductoAActualizar.idUsuario });
                 comando.ExecuteNonQuery();
                 conecta.Close();
-            }
-            else
-            {
-                throw new Exception("El id enviado no existe en la tabla Productos");
-                conecta.Close();
-            }            
-
-            return ProductoAActualizar;
+            
+           
+            return producto;
 
         }
 
@@ -173,12 +180,12 @@ namespace SistemaDeVentas.Repositories
                 {
                     conecta.Open();
                     cmd.Parameters.Add(new SqlParameter("id", SqlDbType.BigInt) { Value = id });
-                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    using (SqlDataReader dr = cmd.ExecuteReader())
                     {
-                        if (reader.HasRows)
+                        if (dr.HasRows)
                         {
-                            reader.Read();
-                            Producto producto = obtenerProductoDesdeReader(reader);
+                            dr.Read();
+                            Producto producto = obtenerProductoDesdeReader(dr);
                             return producto;
                         }
                         else

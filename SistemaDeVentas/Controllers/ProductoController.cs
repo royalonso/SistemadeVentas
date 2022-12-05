@@ -50,11 +50,11 @@ namespace SistemaDeVentas.Controllers
         }
 
         [HttpPut]
-        public ActionResult<Producto> Put(long id, [FromBody] Producto ProdProductoAActualizar)
+        public ActionResult<Producto> Put(int id, [FromBody] Producto ProductoAActualizar)
         {
             try
             {
-                Producto? productoActualizado = repository.ActualizarProducto(id, ProdProductoAActualizar);
+                Producto? productoActualizado = repository.ActualizarProducto(id, ProductoAActualizar);
             if(productoActualizado!= null)
                 {
                     return Ok(productoActualizado);
