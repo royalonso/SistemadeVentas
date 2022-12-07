@@ -1,15 +1,15 @@
 ﻿namespace SistemaDeVentas
 {
-    public class LoginUsuario
+    public class Login
     {
         public string NombreUsuario { get; set; }
         public string Contraseña { get; set; }
 
-        public LoginUsuario() 
+        public Login() 
         { 
         
         }
-        public LoginUsuario(string nombreUsuario, string contrasenia)
+        public Login(string nombreUsuario, string contrasenia)
         {
             this.NombreUsuario = nombreUsuario;
             Contraseña= contrasenia;    

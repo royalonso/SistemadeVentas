@@ -9,11 +9,31 @@ namespace SistemaDeVentas.Controllers
     {
         private UsuarioRepository repository = new UsuarioRepository();
         [HttpGet]
-        public IActionResult GET()                                     //public IEnumerable<Usuario> Get()
+        public ActionResult GET()                                     //public IEnumerable<Usuario> Get()
         {
             List<Usuario> usuario = new List<Usuario>();
             usuario = UsuarioRepository.DevolverUsuarios();
             return Ok(usuario);                                       // return usuario;
+        }
+        [HttpGet("{id}")]
+        public ActionResult<Usuario> Get(int id)
+        {
+            try
+            {
+                Usuario? usuario = repository.obtenerUsuario(id);
+                if (usuario != null)
+                {
+                    return Ok(usuario);
+                }
+                else
+                {
+                    return NotFound("Usuario no encontrado");
+                }
+            }
+            catch (Exception ex)
+            {
+                return Problem(ex.Message);
+            }
         }
         [HttpPost]
         public IActionResult Post()
@@ -21,7 +41,7 @@ namespace SistemaDeVentas.Controllers
             return Ok();
         }
         [HttpDelete]
-        public IActionResult Delete([FromBody] int id)
+        public ActionResult Delete([FromBody] int id)
         {
             //bool borrado = new UsuarioRepository().EliminarUsuario(id);
             bool borrado = repository.EliminarUsuario(id);  

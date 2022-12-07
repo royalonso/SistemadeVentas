@@ -9,13 +9,14 @@ namespace SistemaDeVentas.Repositories
         {
 
         }
-        public bool VerificarUsuario(LoginUsuario lusuario)
+        public bool VerificarUsuario(Login lusuario)
         {
             ConexionDB conexion = new ConexionDB();
             SqlConnection conecta = conexion.conexionR;
             try
             {
-                using (SqlCommand cmd = new SqlCommand("SELECT * FROM usuario WHERE NombreUsuario = @NombreUsuario AND Contraseña = @Contrasenia", conecta))
+                var qwery = "SELECT * FROM usuario WHERE NombreUsuario = @NombreUsuario AND Contraseña = @Contrasenia";
+                using (SqlCommand cmd = new SqlCommand(qwery, conecta))
                 {
                     conecta.Open();
                     cmd.Parameters.Add(new SqlParameter("NombreUsuario", SqlDbType.VarChar) { Value = lusuario.NombreUsuario });

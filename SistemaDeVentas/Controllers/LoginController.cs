@@ -10,7 +10,7 @@ namespace SistemaDeVentas.Controllers
         private LoginRepository repository = new LoginRepository();
         
         [HttpPost]
-        public ActionResult<LoginUsuario> Login(LoginUsuario lusuario)
+        public ActionResult<Login> Login(Login lusuario)
         {
             try
             {

@@ -17,6 +17,28 @@ namespace SistemaDeVentas.Controllers
             products = ProductoRepository.DevolverProducto();
             return Ok(products);                                  // return products
         }
+
+        [HttpGet("{id}")]
+        public ActionResult<Producto> Get(int id)
+        {
+            try
+            {
+                Producto? producto = repository.obtenerProducto(id);
+                if (producto != null)
+                {
+                    return Ok(producto);
+                }
+                else
+                {
+                    return NotFound("Producto no encontrado");
+                }
+            }
+            catch(Exception ex)
+            {
+                return Problem(ex.Message);
+            }
+        }
+
         [HttpPost]
         public ActionResult Post([FromBody] Producto producto)
         {
