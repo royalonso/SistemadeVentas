@@ -36,9 +36,20 @@ namespace SistemaDeVentas.Controllers
             }
         }
         [HttpPost]
-        public IActionResult Post()
+        public ActionResult Post([FromBody] Usuario usuario)
         {
-            return Ok();
+            try
+            {
+                bool p = new UsuarioRepository().CrearUsuario(usuario);
+
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return Problem(ex.Message);
+            }
+
+
         }
         [HttpDelete]
         public ActionResult Delete([FromBody] int id)

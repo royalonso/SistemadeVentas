@@ -2,11 +2,11 @@
 {
     public class CargarVentasRepository  // En desarrollo
     {
-        public CargarVentas ActualizarVentas( CargarVentas ventasproductosvendidos)
+        public CargarVentas ActualizarVentas(CargarVentas ventasproductosvendidos)
         {
            // List<Producto> products = new List<Producto>();
            //products = ProductoRepository.DevolverProducto();
-
+           //ventasproductosvendidos = ventaProductos()
             return ventasproductosvendidos;
         }
         public  List<CargarVentas> ventaProductos()

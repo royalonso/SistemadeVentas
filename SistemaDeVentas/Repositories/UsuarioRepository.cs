@@ -128,6 +128,29 @@ namespace SistemaDeVentas.Repositories
             return usuario;
 
         }
+        public bool CrearUsuario(Usuario usuario)
+        {
+            try
+            {
+                ConexionDB conexion = new ConexionDB();
+                SqlConnection conecta = conexion.conexionR;
+                var query = @"INSERT INTO Usuario(Nombre,Apellido,NombreUsuario,Contraseña,Mail) VALUES(@Nombre,@Apellido,@NombreUsuario,@Contraseña,@Mail)";
+                SqlCommand comando = new SqlCommand(query, conecta);
+                conecta.Open();
+                comando.Parameters.Add(new SqlParameter("Nombre", SqlDbType.VarChar) { Value = usuario.Nombre });
+                comando.Parameters.Add(new SqlParameter("Apellido", SqlDbType.VarChar) { Value = usuario.Apellido });
+                comando.Parameters.Add(new SqlParameter("NombreUsuario", SqlDbType.VarChar) { Value = usuario.NombreUsuario});
+                comando.Parameters.Add(new SqlParameter("Contraseña", SqlDbType.VarChar) { Value = usuario.Contraseña });
+                comando.Parameters.Add(new SqlParameter("Mail", SqlDbType.VarChar) { Value = usuario.mail });
+                comando.ExecuteNonQuery();
+                conecta.Close();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("No se pudo crear el Usuario");
+            }
+        }
 
         public Usuario? obtenerUsuario(int id)
         {
