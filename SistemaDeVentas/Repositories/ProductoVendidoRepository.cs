@@ -3,7 +3,7 @@ using System.Data.SqlClient;
 
 namespace SistemaDeVentas.Repositories
 {
-    public class ProductoVendidoRepository
+    public class ProductoVendidoRepository:ProductoVendido
     {
 
         public static List<ProductoVendido> DevolverProductoVendido()
@@ -48,6 +48,46 @@ namespace SistemaDeVentas.Repositories
             }
 
             return listaProductoV;
+        }
+        public bool CrearProductoVendido(ProductoVendido productovendido)
+        {
+            try
+            {
+                ProductoRepository haystock = new ProductoRepository();
+                if (haystock.verificarStock(productovendido.IdProducto, productovendido.Stock)) // Verifico si hay Stock y descargo el mismo
+                {
+                    VentaRepository venta1 = new VentaRepository(); //Creo la venta
+                    Venta venta2 = new Venta();
+                    venta2.Comentarios = $"Vendida";
+                    bool p = venta1.CrearVenta(venta2);
+
+                    int idVenta = venta1.DameUltimoID(); //Obtengo el id de ventas
+
+                    ConexionDB conexion = new ConexionDB();   //Cargo el producto vendido
+                    SqlConnection conecta = conexion.conexionR;
+                    var query = @"INSERT INTO ProductoVendido(Stock,idProducto,Idventa) VALUES(@Stock,@IdProducto,@IdVenta)";
+                    SqlCommand comando = new SqlCommand(query, conecta);
+                    conecta.Open();
+                    comando.Parameters.Add(new SqlParameter("Stock", SqlDbType.Int) { Value = productovendido.Stock });
+                    comando.Parameters.Add(new SqlParameter("IdProducto", SqlDbType.Float) { Value = productovendido.IdProducto });
+                    comando.Parameters.Add(new SqlParameter("IdVenta", SqlDbType.Int) { Value = idVenta });
+                    //comando.Parameters.Add(new SqlParameter("IdVenta", SqlDbType.Int) { Value = productovendido.idVenta });
+                    comando.ExecuteNonQuery();
+                    conecta.Close();
+                    return true;
+
+                }
+                else
+                {
+                    throw new Exception("No hay stock o el producto no existe, Verifique");
+                }
+
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("No se pudo Insertar el ProductoVendido");
+            }
         }
 
         public bool EliminarProductoVendido(int id)

@@ -44,7 +44,7 @@ namespace SistemaDeVentas.Controllers
         {
             try
             {
-                bool p = new ProductoRepository().CrearProducto(producto);
+                bool p = repository.CrearProducto(producto); //ProductoRepository().CrearProducto(producto);
                 
                 return Ok();
             }

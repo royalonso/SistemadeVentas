@@ -15,10 +15,22 @@ namespace SistemaDeVentas.Controllers
             return Ok(venta1);                                // return venta1;
         }
         [HttpPost]
-        public IActionResult Post() 
+        public ActionResult Post([FromBody] Venta venta)
         {
-         return Ok(); 
-        }        
+            try
+            {
+                bool p = repository.CrearVenta(venta);
+
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return Problem(ex.Message);
+            }
+
+
+        }
+            
         [HttpDelete]
         public IActionResult Delete([FromBody] int id)
         {

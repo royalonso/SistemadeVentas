@@ -16,9 +16,6 @@ namespace SistemaDeVentas.Repositories
                 ConexionDB conexion = new ConexionDB();
                 SqlConnection conecta = conexion.conexionR;
                 var query = @"select id, Comentarios from Venta";
-                //using (SqlConnection conect = new SqlConnection(conectionstring))
-
-                //{
                 using (SqlCommand comando = new SqlCommand(query, conecta))
                 {
                     conecta.Open();
@@ -29,7 +26,6 @@ namespace SistemaDeVentas.Repositories
                             while (dr.Read())
                             {
                                 var ventas = new Venta();
-                                //producto.Id = dr.GetInt16(0);
                                 ventas.id = Convert.ToInt32(dr["id"]);
                                 ventas.Comentarios = dr["Comentarios"].ToString();
                                 listaVenta.Add(ventas);
@@ -40,7 +36,7 @@ namespace SistemaDeVentas.Repositories
                     }
                 }
 
-                //}
+                
             }
             catch (Exception ex)
             {
@@ -48,6 +44,26 @@ namespace SistemaDeVentas.Repositories
             }
 
             return listaVenta;
+        }
+        public bool CrearVenta(Venta venta)
+        {
+            try
+            {
+                ConexionDB conexion = new ConexionDB();
+                SqlConnection conecta = conexion.conexionR;
+                var query = @"INSERT INTO Venta(Comentarios) VALUES(@Comentarios)";
+                SqlCommand comando = new SqlCommand(query, conecta);
+                conecta.Open();
+                comando.Parameters.Add(new SqlParameter("Comentarios", SqlDbType.VarChar) { Value = venta.Comentarios });
+                //comando.Parameters.Add(new SqlParameter("IdProducto", SqlDbType.Float) { Value = productovendido.IdProducto });
+                comando.ExecuteNonQuery();
+                conecta.Close();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("No se pudo Insertar la Venta");
+            }
         }
         public bool EliminarVenta(int id)
         {
@@ -69,6 +85,16 @@ namespace SistemaDeVentas.Repositories
                 throw;
             }
 
+        }
+        public int  DameUltimoID()
+        {
+            ConexionDB conexion = new ConexionDB();
+            SqlConnection conecta = conexion.conexionR;
+            var query = @"SELECT TOP 1 id from Venta ORDER BY id DESC";
+            SqlCommand comando = new SqlCommand(query, conecta);
+            conecta.Open();
+            int id = Convert.ToInt32(comando.ExecuteScalar());
+            return id;
         }
     }
 }

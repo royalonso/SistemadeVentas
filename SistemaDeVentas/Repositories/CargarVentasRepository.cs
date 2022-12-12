@@ -1,15 +1,23 @@
-﻿namespace SistemaDeVentas.Repositories
+﻿using System.Reflection;
+using System.Security.Cryptography.X509Certificates;
+
+namespace SistemaDeVentas.Repositories
 {
     public class CargarVentasRepository  // En desarrollo
     {
         public CargarVentas ActualizarVentas(CargarVentas ventasproductosvendidos)
         {
-           // List<Producto> products = new List<Producto>();
-           //products = ProductoRepository.DevolverProducto();
-           //ventasproductosvendidos = ventaProductos()
+            List<CargarVentas> venta1 = new List<CargarVentas>();
+            venta1 = ventaProductos();
+            ventasproductosvendidos.IdProducto = venta1.Count;
             return ventasproductosvendidos;
+            foreach(CargarVentas venta in  venta1)
+            {
+                
+            }
+           
         }
-        public  List<CargarVentas> ventaProductos()
+        public  static List<CargarVentas> ventaProductos()
         {
             var listaDeVentas = new List<CargarVentas>();
             var cargaventas = new CargarVentas();

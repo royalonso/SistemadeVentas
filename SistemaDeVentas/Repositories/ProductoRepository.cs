@@ -205,6 +205,49 @@ namespace SistemaDeVentas.Repositories
                 conecta.Close();
             }
         }
+        public bool verificarStock(int id, int stock)
+        {
+            ConexionDB conexion = new ConexionDB();
+            SqlConnection conecta = conexion.conexionR;
+            var  query = "SELECT * FROM producto WHERE id = @id AND Stock >= @stock";
+            try
+            {
+                using (SqlCommand cmd = new SqlCommand(query, conecta))
+                {
+                    conecta.Open();
+                    cmd.Parameters.Add(new SqlParameter("id", SqlDbType.BigInt) { Value = id });
+                    cmd.Parameters.Add(new SqlParameter("stock", SqlDbType.BigInt) { Value = stock });
+                    using (SqlDataReader dr = cmd.ExecuteReader())
+                    {
+                        if (dr.HasRows)
+                        {
+                            dr.Close();
+                            query = "UPDATE Producto SET stock = stock-@stock WHERE id = @id ";     // Descargo del stock la cantidad vendida
+                            SqlCommand comando = new SqlCommand(query, conecta);
+                            comando.Parameters.Add(new SqlParameter("id", SqlDbType.Int) { Value = id });
+                            comando.Parameters.Add(new SqlParameter("Stock", SqlDbType.Int) { Value = stock });
+                            comando.ExecuteNonQuery();
+                            return true;
+                        }
+                        else
+                        {
+                            return false;
+                        }
+                    }
+                }
+            }
+            catch
+            {
+                return false;
+                throw;
+            }
+            finally
+            {
+                conecta.Close();
+            }
+
+        }
+
         private Producto obtenerProductoDesdeReader(SqlDataReader dr)
         {
 
