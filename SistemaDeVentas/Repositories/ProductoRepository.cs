@@ -205,7 +205,7 @@ namespace SistemaDeVentas.Repositories
                 conecta.Close();
             }
         }
-        public bool verificarStock(int id, int stock)
+        public bool verificarStock(int id, int stock)  //Verifica si hay stock para vender un producto determinado
         {
             ConexionDB conexion = new ConexionDB();
             SqlConnection conecta = conexion.conexionR;

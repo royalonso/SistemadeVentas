@@ -8,12 +8,20 @@ namespace SistemaDeVentas.Controllers
     {
         private ProductoVendidoRepository repository = new ProductoVendidoRepository();
         [HttpGet]
-        public IActionResult GET()                                           //public IEnumerable<ProductoVendido> Get()
+        public ActionResult GET()                                            //public IEnumerable<ProductoVendido> Get()
         {
             List<ProductoVendido> productv = new List<ProductoVendido>();
             productv = ProductoVendidoRepository.DevolverProductoVendido();
             return Ok(productv);                                              //return Ok;
         }
+        [HttpGet("Listado")] //syncsale
+        public IEnumerable<ProductoVendido> GETlISTADO()                                            //public IEnumerable<ProductoVendido> Get()
+        {
+            List<ProductoVendido> productv = new List<ProductoVendido>();
+            productv = ProductoVendidoRepository.DevolverProductoVendido2();
+            return (productv);                                              //return Ok;
+        }
+
         [HttpPost]
         public ActionResult Post([FromBody] ProductoVendido productovendido)
         {

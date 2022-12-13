@@ -14,8 +14,9 @@ namespace SistemaDeVentas.Repositories
                 //string conectionstring = @"Server=NEXTHP11\SQLEXPRESS;database=SistemaGestion;Trusted_Connection=True;";
                 ConexionDB conexion = new ConexionDB();
                 SqlConnection conecta = conexion.conexionR;
-                var query = @"select id, idProducto , Stock, idVenta from ProductoVendido";
-
+                //var query = @"select id, idProducto , Stock, idVenta from ProductoVendido";
+                var query = @"select Descripciones as Articulo, Pv.Stock as CantidadVendida , P.PrecioVenta, (P.PrecioVenta*Pv.Stock) as TotalVendido
+                              from producto P inner join ProductoVendido Pv on P.Id = Pv.IdProducto";
                 //using (SqlConnection conect = new SqlConnection(conectionstring))
                 //{
                 using (SqlCommand comando = new SqlCommand(query, conecta))
@@ -45,6 +46,52 @@ namespace SistemaDeVentas.Repositories
             catch (Exception ex)
             {
 
+            }
+
+            return listaProductoV;
+        }
+        public static List<ProductoVendido> DevolverProductoVendido2()
+        {
+            var listaProductoV = new List<ProductoVendido>();
+            try
+            {
+                //string conectionstring = @"Server=NEXTHP11\SQLEXPRESS;database=SistemaGestion;Trusted_Connection=True;";
+                ConexionDB conexion = new ConexionDB();
+                SqlConnection conecta = conexion.conexionR;
+                //var query = @"select id, idProducto , Stock, idVenta from ProductoVendido";
+                var query = @"select idProducto as Codigo,Descripciones as Articulo,P.Stock as StockActual, Pv.Stock as CantidadVendida , P.PrecioVenta, (P.PrecioVenta*Pv.Stock) as TotalVendido, Pv.idVenta as NrodeVenta
+                              from producto P inner join ProductoVendido Pv on P.Id = Pv.IdProducto";
+                //using (SqlConnection conect = new SqlConnection(conectionstring))
+                //{
+                using (SqlCommand comando = new SqlCommand(query, conecta))
+                {
+                    conecta.Open();
+                    using (SqlDataReader dr = comando.ExecuteReader())
+                    {
+                        if (dr.HasRows)
+                        {
+                            while (dr.Read())
+                            {
+                                var productov = new ProductoVendido();
+                                productov.IdProducto = Convert.ToInt32(dr["Codigo"]);
+                                productov.Producto = Convert.ToString(dr["Articulo"]);
+                                productov.Stock = Convert.ToInt32(dr["StockActual"]);
+                                productov.CantidadVendida = Convert.ToInt32(dr["CantidadVendida"]);
+                                productov.PrecioVenta = Convert.ToInt32(dr["PrecioVenta"]);
+                                productov.TotalVendido = Convert.ToInt32(dr["TotalVendido"]);
+                                productov.idVenta = Convert.ToInt32(dr["NrodeVenta"]);
+                                listaProductoV.Add(productov);
+
+                            }
+                            conecta.Close();
+                        }
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                throw;
             }
 
             return listaProductoV;
@@ -111,5 +158,87 @@ namespace SistemaDeVentas.Repositories
             }
 
         }
+        public bool EliminarProductoVendidoporVenta(int id)
+        {
+            try
+            {
+                int filaseliminadas = 0;
+                ConexionDB conexion = new ConexionDB();
+                SqlConnection conecta = conexion.conexionR;
+                var query = @"DELETE from ProductoVendido where idVenta = @id";
+                SqlCommand comando = new SqlCommand(query, conecta);
+                conecta.Open();
+                comando.Parameters.Add(new SqlParameter("id", SqlDbType.Int) { Value = id });
+                filaseliminadas = comando.ExecuteNonQuery();
+                conecta.Close();
+                return filaseliminadas > 0;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+
+        }
+        public int DameIDProducto(int id2)                           // Obtiene el IdproductoVendido para un idventa 
+        {
+            try
+            {
+                ConexionDB conexion = new ConexionDB();
+                SqlConnection conecta = conexion.conexionR;
+                var query = @"SELECT TOP 1 idProducto from ProductoVendido WHERE idVenta = @id";
+                SqlCommand comando = new SqlCommand(query, conecta);
+                conecta.Open();
+                comando.Parameters.Add(new SqlParameter("id", SqlDbType.Int) { Value = id2 });
+                int id = Convert.ToInt32(comando.ExecuteScalar());
+                return id;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+
+        }
+        public int DameStockVendido(int id2)                           // Obtiene el IdproductoVendido para un idventa 
+        {
+            try
+            {
+                ConexionDB conexion = new ConexionDB();
+                SqlConnection conecta = conexion.conexionR;
+                var query = @"SELECT TOP 1 stock from ProductoVendido WHERE idVenta = @id";
+                SqlCommand comando = new SqlCommand(query, conecta);
+                conecta.Open();
+                comando.Parameters.Add(new SqlParameter("id", SqlDbType.Int) { Value = id2 });
+                int stock = Convert.ToInt32(comando.ExecuteScalar());
+                return stock;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+
+        }
+        public bool ReponerStockProducto(int id, int stock)
+        {
+            try
+            {
+                int filaseliminadas = 0;
+                ConexionDB conexion = new ConexionDB();
+                SqlConnection conecta = conexion.conexionR;
+                conecta.Open();
+                var query = "UPDATE Producto SET stock = stock+@stock WHERE id = @id" ;
+                SqlCommand comando = new SqlCommand(query, conecta);
+                comando.Parameters.Add(new SqlParameter("id", SqlDbType.Int) { Value = id });
+                comando.Parameters.Add(new SqlParameter("stock", SqlDbType.Int) { Value = stock });
+                filaseliminadas = comando.ExecuteNonQuery();
+                conecta.Close();
+                return filaseliminadas > 0;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+
+        }
+       
     }
 }

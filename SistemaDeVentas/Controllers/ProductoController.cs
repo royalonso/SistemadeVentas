@@ -59,7 +59,8 @@ namespace SistemaDeVentas.Controllers
         public ActionResult Delete([FromBody]int id)
         {
             bool borradoPV = repository.EliminarProductoVendido(id);   // Borro productos vendidos antes de borrar un producto
-            bool borrado = repository.EliminarProducto(id);
+            bool borrado = repository.EliminarProducto(id);            // Un producto no se borra en genereal ya que desaparece
+                                                                       // todo el historial del mismo
             if (borrado) 
             {
                 return Ok();
