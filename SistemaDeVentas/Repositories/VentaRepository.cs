@@ -71,11 +71,18 @@ namespace SistemaDeVentas.Repositories
             {
                 //Nuevo
                 ProductoVendidoRepository prodven = new ProductoVendidoRepository();
+                /*
                 int idpv = prodven.DameIDProducto(id);        //Obtengo el id de producto de una venta
                 int stockv = prodven.DameStockVendido(id);    //Obtengo el stock de producto vendido para esa venta
                 prodven.ReponerStockProducto(idpv, stockv);   //Repongo el Stock Vendido a la tabla producto
-                prodven.EliminarProductoVendidoporVenta(id);  //Elimino el producto vendido
-                //Nuevo
+
+                //Resumo los 3 metodos anteriores en uno solo ya que eran para ventas y productos vendidos en forma unitaria
+                
+                */
+                prodven.ReponerStockProducto2(id);              //Repongo el stock del producto vendido para una venta con un datareader.
+                                                                //Ya que puede haber mas deun producto vendido asociado a una venta. 
+                prodven.EliminarProductoVendidoporVenta(id);    //Elimino el producto vendido
+                
                 // Elimino la venta
                 int filaseliminadas = 0;
                 ConexionDB conexion = new ConexionDB();
@@ -94,7 +101,7 @@ namespace SistemaDeVentas.Repositories
             }
 
         }
-        public int  DameUltimoID()
+        public int  DameUltimoID()  
         {
             ConexionDB conexion = new ConexionDB();
             SqlConnection conecta = conexion.conexionR;

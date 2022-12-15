@@ -191,7 +191,10 @@ namespace SistemaDeVentas.Repositories
                 comando.Parameters.Add(new SqlParameter("id", SqlDbType.Int) { Value = id2 });
                 int id = Convert.ToInt32(comando.ExecuteScalar());
                 return id;
+                     
+
             }
+                //nuevo
             catch (Exception ex)
             {
                 throw;
@@ -239,6 +242,70 @@ namespace SistemaDeVentas.Repositories
             }
 
         }
-       
+        public void Reponerstock2(SqlDataReader dr)
+        {
+            
+              
+        }
+        public bool ReponerStockProducto2(int id)   // Creo un dr con los P Vendidos para una venta y repongo el stock antes de borrarlos
+        {
+            // Nuevo
+            ConexionDB conexion = new ConexionDB();
+            ConexionDB conexion2 = new ConexionDB();
+            SqlConnection conecta = conexion.conexionR;
+            SqlConnection conecta2 = conexion2.conexionR2;
+            int id2 = 0;
+            int idp = 0;
+            int idst = 0;
+            try
+            {              
+                conecta.Open();
+                conecta2.Open(); //Genero otra conexion para recorrer un dr con un sqlcommand en su interior sino genera error de conexion.   
+                var query2 = @"SELECT idProducto, stock from ProductoVendido WHERE idVenta = @id";
+                using (SqlCommand comnd = new SqlCommand(query2, conecta))
+                {
+                    comnd.Parameters.Add(new SqlParameter("id", SqlDbType.Int) { Value = id });
+                    using (SqlDataReader dr = comnd.ExecuteReader())
+                        
+                    {
+                        if (dr.HasRows)
+                        {
+                            var query3 = "UPDATE Producto SET stock = stock+@stock WHERE id = @id";
+                            while (dr.Read())                          
+                            {
+                                
+                                idp = Convert.ToInt32(dr["idProducto"]);
+                                idst = Convert.ToInt32(dr["stock"]);
+                                query3 = "UPDATE Producto SET stock = stock+@stock WHERE id = @id";
+                                SqlCommand comnd2 = new SqlCommand(query3, conecta2); // Recordar que para recorrer un dr debemos utilizar otra
+                                                                                      // conexion.Si utilizamos un sqlcommnad en el mismo while
+                                comnd2.Parameters.Add(new SqlParameter("id", SqlDbType.Int) { Value = idp});
+                                comnd2.Parameters.Add(new SqlParameter("stock", SqlDbType.Int) { Value = idst});
+                                comnd2.ExecuteNonQuery();
+                                                               
+                            }
+                            return true;
+
+                        }
+                        else
+                        {
+                            return false;
+                        }
+                    }
+                }
+            
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+            finally
+            {
+                conecta.Close();
+                conecta2.Close();
+            }
+        }
+
+
     }
 }
