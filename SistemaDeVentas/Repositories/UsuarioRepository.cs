@@ -187,6 +187,41 @@ namespace SistemaDeVentas.Repositories
                 conecta.Close();
             }
         }
+        public Usuario? obtenerUsuariopornombre(string nombreusuario)
+        {
+            ConexionDB conexion = new ConexionDB();
+            SqlConnection conecta = conexion.conexionR;
+            try
+            {
+                using (SqlCommand cmd = new SqlCommand("SELECT * FROM usuario WHERE NombreUsuario = @nombreusuario", conecta))
+                {
+                    conecta.Open();
+                    cmd.Parameters.Add(new SqlParameter("nombreusuario", SqlDbType.VarChar) { Value = nombreusuario });
+                    using (SqlDataReader dr = cmd.ExecuteReader())
+                    {
+                        if (dr.HasRows)
+                        {
+                            dr.Read();
+                            Usuario usuario = obtenerUsuariodr(dr);
+                            return usuario;
+                        }
+                        else
+                        {
+                            return null;
+                        }
+                    }
+                }
+            }
+            catch
+            {
+                return null;
+                throw;
+            }
+            finally
+            {
+                conecta.Close();
+            }
+        }
         private Usuario obtenerUsuariodr(SqlDataReader dr)
         {
 
@@ -196,7 +231,7 @@ namespace SistemaDeVentas.Repositories
             usuario.Nombre = dr["Nombre"].ToString();
             usuario.NombreUsuario = dr["NombreUsuario"].ToString();
             usuario.mail = dr["mail"].ToString();
-            usuario.Contraseña = dr["contraseña"].ToString();
+            usuario.Contraseña = "********"; //dr["contraseña"].ToString();
             return usuario;
         }
 

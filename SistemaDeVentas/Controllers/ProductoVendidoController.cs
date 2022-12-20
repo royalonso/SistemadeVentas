@@ -14,11 +14,11 @@ namespace SistemaDeVentas.Controllers
             productv = ProductoVendidoRepository.DevolverProductoVendido();
             return Ok(productv);                                              //return Ok;
         }
-        [HttpGet("Listado")] //Personalizo el GET
-        public IEnumerable<ProductoVendido> GETlISTADO()                                            
+        [HttpGet("ProductoVendidoPorUsuario")] //Personalizo el GET
+        public IEnumerable<ProductoVendido> GETlISTADO(int id)                                            
         {
             List<ProductoVendido> productv = new List<ProductoVendido>();
-            productv = ProductoVendidoRepository.DevolverProductoVendido2();
+            productv = ProductoVendidoRepository.DevolverProductoVendido2(id);
             return (productv);                                              
         }
 

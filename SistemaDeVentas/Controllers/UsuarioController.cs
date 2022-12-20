@@ -35,6 +35,26 @@ namespace SistemaDeVentas.Controllers
                 return Problem(ex.Message);
             }
         }
+        [HttpGet("UsuarioporNombre")] //Personalizo el GET
+        public ActionResult<Usuario> GETlISTADO(string nombreusuario)
+        {
+            try
+            {
+                Usuario? usuario = repository.obtenerUsuariopornombre(nombreusuario);
+                if (usuario != null)
+                {
+                    return Ok(usuario);
+                }
+                else
+                {
+                    return NotFound("Usuario no encontrado");
+                }
+            }
+            catch (Exception ex)
+            {
+                return Problem(ex.Message);
+            }
+        }
         [HttpPost]
         public ActionResult Post([FromBody] Usuario usuario)
         {

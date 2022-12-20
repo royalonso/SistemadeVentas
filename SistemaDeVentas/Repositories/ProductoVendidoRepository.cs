@@ -12,10 +12,9 @@ namespace SistemaDeVentas.Repositories
             try
             {
                 ConexionDB conexion = new ConexionDB();
-                SqlConnection conecta = conexion.conexionR;
-               
-                var query = @"select Descripciones as Articulo, Pv.Stock as CantidadVendida , P.PrecioVenta, (P.PrecioVenta*Pv.Stock) as TotalVendido
-                              from producto P inner join ProductoVendido Pv on P.Id = Pv.IdProducto";
+                SqlConnection conecta = conexion.conexionR;              
+                var query = @"select idProducto, Descripciones as Articulo,P.Stock as StockActual, Pv.Stock as CantidadVendida , P.PrecioVenta, (P.PrecioVenta*Pv.Stock) as TotalVendido, Pv.idVenta as NrodeVenta
+                from producto P inner join ProductoVendido Pv on P.Id = Pv.IdProducto ";
                 using (SqlCommand comando = new SqlCommand(query, conecta))
                 {
                     conecta.Open();
@@ -27,10 +26,15 @@ namespace SistemaDeVentas.Repositories
                             {
                                 var productov = new ProductoVendido();
                                 //producto.Id = dr.GetInt16(0);
-                                productov.Id = Convert.ToInt32(dr["id"]);
+                                //productov.Id = Convert.ToInt32(dr["id"]);
                                 productov.IdProducto = Convert.ToInt32(dr["idProducto"]);
-                                productov.Stock = Convert.ToInt32(dr["Stock"]);
-                                productov.idVenta = Convert.ToInt32(dr["idVenta"]); ;
+                                productov.Producto = Convert.ToString(dr["Articulo"]); //nuevo
+                                productov.Stock = Convert.ToInt32(dr["StockActual"]);
+                                productov.CantidadVendida = Convert.ToInt32(dr["CantidadVendida"]);//nuevo
+                                productov.PrecioVenta = Convert.ToInt32(dr["PrecioVenta"]);//nuevo
+                                productov.TotalVendido = Convert.ToInt32(dr["TotalVendido"]);//nuevo
+                                productov.idVenta = Convert.ToInt32(dr["NrodeVenta"]);
+                                //productov.idVenta = Convert.ToInt32(dr["idVenta"]); ;
                                 listaProductoV.Add(productov);
 
                             }
@@ -47,18 +51,22 @@ namespace SistemaDeVentas.Repositories
 
             return listaProductoV;
         }
-        public static List<ProductoVendido> DevolverProductoVendido2()
+
+        public static List<ProductoVendido> DevolverProductoVendido2(int id)
         {
+            
             var listaProductoV = new List<ProductoVendido>();
             try
             {
                 ConexionDB conexion = new ConexionDB();
                 SqlConnection conecta = conexion.conexionR;
-                var query = @"select idProducto as Codigo,Descripciones as Articulo,P.Stock as StockActual, Pv.Stock as CantidadVendida , P.PrecioVenta, (P.PrecioVenta*Pv.Stock) as TotalVendido, Pv.idVenta as NrodeVenta
-                from producto P inner join ProductoVendido Pv on P.Id = Pv.IdProducto";
+                var query = @"select idProducto as Codigo,Descripciones as Articulo,P.Stock as StockActual, Pv.Stock as CantidadVendida , P.PrecioVenta, 
+                            (P.PrecioVenta*Pv.Stock) as TotalVendido, Pv.idVenta as NrodeVenta, P.idUsuario as Usuario
+                            from producto P inner join ProductoVendido Pv on P.Id = Pv.IdProducto WHERE p.idUsuario = @id";
                 using (SqlCommand comando = new SqlCommand(query, conecta))
                 {
                     conecta.Open();
+                    comando.Parameters.Add(new SqlParameter("id", SqlDbType.Int) { Value = id });
                     using (SqlDataReader dr = comando.ExecuteReader())
                     {
                         if (dr.HasRows)
@@ -73,6 +81,7 @@ namespace SistemaDeVentas.Repositories
                                 productov.PrecioVenta = Convert.ToInt32(dr["PrecioVenta"]);
                                 productov.TotalVendido = Convert.ToInt32(dr["TotalVendido"]);
                                 productov.idVenta = Convert.ToInt32(dr["NrodeVenta"]);
+                                productov.idUsuario = Convert.ToInt32(dr["Usuario"]);
                                 listaProductoV.Add(productov);
 
                             }

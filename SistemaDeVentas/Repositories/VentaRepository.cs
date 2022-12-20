@@ -10,7 +10,6 @@ namespace SistemaDeVentas.Repositories
             var listaVenta = new List<Venta>();
             try
             {
-                //string conectionstring = @"Server=NEXTHP11\SQLEXPRESS;database=SistemaGestion;Trusted_Connection=True;";
                 ConexionDB conexion = new ConexionDB();
                 SqlConnection conecta = conexion.conexionR;
                 var query = @"select id, Comentarios, idUsuarios from Venta";
@@ -48,7 +47,7 @@ namespace SistemaDeVentas.Repositories
 
             try
             {
-                //Nuevo Verifico si hay Sock de los productos
+                //Verifico si hay Sock de los productos para la venta
                 ProductoRepository producto = new ProductoRepository();
                 foreach (var item in venta.productosvendidos)
                 {
@@ -57,7 +56,7 @@ namespace SistemaDeVentas.Repositories
                         throw new Exception("El Producto no Existe o no hay Stock Suficiente");
                     }
                 }
-                //Nuevo
+                //Genero la venta
                 ConexionDB conexion = new ConexionDB();
                 SqlConnection conecta = conexion.conexionR;
                 var query = @"INSERT INTO Venta(Comentarios,idUsuario) VALUES(@Comentarios,@idUsuario)";
@@ -67,18 +66,17 @@ namespace SistemaDeVentas.Repositories
                 comando.Parameters.Add(new SqlParameter("idUsuario", SqlDbType.Int) { Value = venta.idUsuario});
                 comando.ExecuteNonQuery();
                 conecta.Close();
-                //Nuevo
-                //ProductoVendidoRepository prodven = new ProductoVendidoRepository();
+
                 var query1 = @"INSERT INTO ProductoVendido(Stock,idProducto,Idventa) VALUES(@Stock,@IdProducto,@IdVenta)";
                 SqlCommand comando1 = new SqlCommand(query1, conecta);
                 conecta.Open();              
-                foreach(var item in venta.productosvendidos)
+                foreach(var item in venta.productosvendidos) // Cargo los productos vendidos
                 {
                     comando1.Parameters.Add(new SqlParameter("Stock", SqlDbType.Int) { Value = item.CantidadVendida });
                     comando1.Parameters.Add(new SqlParameter("IdProducto", SqlDbType.Int) { Value = item.IdProducto});
                     comando1.Parameters.Add(new SqlParameter("IdVenta", SqlDbType.Int) { Value = DameUltimoID() });
                     comando1.ExecuteNonQuery();
-                    producto.descargarStock(item.IdProducto, item.CantidadVendida);
+                    producto.descargarStock(item.IdProducto, item.CantidadVendida); // descargo del stock los productos vendidos
                 }
                 conecta.Close();
                 //Nuevo
