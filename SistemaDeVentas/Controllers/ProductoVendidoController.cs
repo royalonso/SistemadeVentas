@@ -14,12 +14,12 @@ namespace SistemaDeVentas.Controllers
             productv = ProductoVendidoRepository.DevolverProductoVendido();
             return Ok(productv);                                              //return Ok;
         }
-        [HttpGet("Listado")] //syncsale
-        public IEnumerable<ProductoVendido> GETlISTADO()                                            //public IEnumerable<ProductoVendido> Get()
+        [HttpGet("Listado")] //Personalizo el GET
+        public IEnumerable<ProductoVendido> GETlISTADO()                                            
         {
             List<ProductoVendido> productv = new List<ProductoVendido>();
             productv = ProductoVendidoRepository.DevolverProductoVendido2();
-            return (productv);                                              //return Ok;
+            return (productv);                                              
         }
 
         [HttpPost]
@@ -41,7 +41,6 @@ namespace SistemaDeVentas.Controllers
         [HttpDelete]
         public IActionResult Delete([FromBody] int id)
         {
-            //bool borradoPV = new ProductoVendidoRepository().EliminarProductoVendido(id);
             bool borradoPV = repository.EliminarProductoVendido(id);
             if (borradoPV)
             {

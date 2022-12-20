@@ -11,14 +11,11 @@ namespace SistemaDeVentas.Repositories
             var listaProductoV = new List<ProductoVendido>();
             try
             {
-                //string conectionstring = @"Server=NEXTHP11\SQLEXPRESS;database=SistemaGestion;Trusted_Connection=True;";
                 ConexionDB conexion = new ConexionDB();
                 SqlConnection conecta = conexion.conexionR;
-                //var query = @"select id, idProducto , Stock, idVenta from ProductoVendido";
+               
                 var query = @"select Descripciones as Articulo, Pv.Stock as CantidadVendida , P.PrecioVenta, (P.PrecioVenta*Pv.Stock) as TotalVendido
                               from producto P inner join ProductoVendido Pv on P.Id = Pv.IdProducto";
-                //using (SqlConnection conect = new SqlConnection(conectionstring))
-                //{
                 using (SqlCommand comando = new SqlCommand(query, conecta))
                 {
                     conecta.Open();
@@ -55,14 +52,10 @@ namespace SistemaDeVentas.Repositories
             var listaProductoV = new List<ProductoVendido>();
             try
             {
-                //string conectionstring = @"Server=NEXTHP11\SQLEXPRESS;database=SistemaGestion;Trusted_Connection=True;";
                 ConexionDB conexion = new ConexionDB();
                 SqlConnection conecta = conexion.conexionR;
-                //var query = @"select id, idProducto , Stock, idVenta from ProductoVendido";
                 var query = @"select idProducto as Codigo,Descripciones as Articulo,P.Stock as StockActual, Pv.Stock as CantidadVendida , P.PrecioVenta, (P.PrecioVenta*Pv.Stock) as TotalVendido, Pv.idVenta as NrodeVenta
-                              from producto P inner join ProductoVendido Pv on P.Id = Pv.IdProducto";
-                //using (SqlConnection conect = new SqlConnection(conectionstring))
-                //{
+                from producto P inner join ProductoVendido Pv on P.Id = Pv.IdProducto";
                 using (SqlCommand comando = new SqlCommand(query, conecta))
                 {
                     conecta.Open();
@@ -101,11 +94,12 @@ namespace SistemaDeVentas.Repositories
             try
             {
                 ProductoRepository haystock = new ProductoRepository();
-                if (haystock.verificarStock(productovendido.IdProducto, productovendido.Stock)) // Verifico si hay Stock y descargo el mismo
-                {
+                if (haystock.verificarydescargarStock(productovendido.IdProducto, productovendido.Stock)) // Verifico si hay Stock 
+                {                                                                               // y descargo el mismo
                     VentaRepository venta1 = new VentaRepository(); //Creo la venta
                     Venta venta2 = new Venta();
                     venta2.Comentarios = $"Vendida";
+                    venta2.idUsuario = 1;
                     bool p = venta1.CrearVenta(venta2);
 
                     int idVenta = venta1.DameUltimoID(); //Obtengo el id de ventas
@@ -118,7 +112,6 @@ namespace SistemaDeVentas.Repositories
                     comando.Parameters.Add(new SqlParameter("Stock", SqlDbType.Int) { Value = productovendido.Stock });
                     comando.Parameters.Add(new SqlParameter("IdProducto", SqlDbType.Float) { Value = productovendido.IdProducto });
                     comando.Parameters.Add(new SqlParameter("IdVenta", SqlDbType.Int) { Value = idVenta });
-                    //comando.Parameters.Add(new SqlParameter("IdVenta", SqlDbType.Int) { Value = productovendido.idVenta });
                     comando.ExecuteNonQuery();
                     conecta.Close();
                     return true;
@@ -201,7 +194,7 @@ namespace SistemaDeVentas.Repositories
             }
 
         }
-        public int DameStockVendido(int id2)                           // Obtiene el IdproductoVendido para un idventa 
+        public int DameStockVendido(int id2)                           //  Actualmente no utilizo este metodo Obtiene el IdproductoVendido para un idventa 
         {
             try
             {
@@ -220,7 +213,7 @@ namespace SistemaDeVentas.Repositories
             }
 
         }
-        public bool ReponerStockProducto(int id, int stock)
+        public bool ReponerStockProducto(int id, int stock) // Actualmente no utilizo este metodo
         {
             try
             {
@@ -242,12 +235,7 @@ namespace SistemaDeVentas.Repositories
             }
 
         }
-        public void Reponerstock2(SqlDataReader dr)
-        {
-            
-              
-        }
-        public bool ReponerStockProducto2(int id)   // Creo un dr con los P Vendidos para una venta y repongo el stock antes de borrarlos
+        public bool ReponerStockProducto2(int id)   // Creo un dr con los Prod. Vendidos para una venta y repongo el stock antes de borrarlos
         {
             // Nuevo
             ConexionDB conexion = new ConexionDB();
@@ -260,7 +248,7 @@ namespace SistemaDeVentas.Repositories
             try
             {              
                 conecta.Open();
-                conecta2.Open(); //Genero otra conexion para recorrer un dr con un sqlcommand en su interior sino genera error de conexion.   
+                conecta2.Open(); //Genere otra conexion,ya para recorrer un dr con un sqlcommand en su interior no pueden usar la misma.Sino genera un error de conexion 
                 var query2 = @"SELECT idProducto, stock from ProductoVendido WHERE idVenta = @id";
                 using (SqlCommand comnd = new SqlCommand(query2, conecta))
                 {

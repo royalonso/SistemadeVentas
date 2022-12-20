@@ -28,9 +28,25 @@ namespace SistemaDeVentas.Controllers
                 return Problem(ex.Message);
             }
 
+        }
+        /*
+        [HttpPost("Listado")] //Personalizo el GET
+                              // public IEnumerable<ProductoVendido> GETlISTADO()
+        public IActionResult PostListado([FromBody] Venta venta)
+        {
+            try
+            {
+                bool p = repository.CrearVenta(venta);
+
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return Problem(ex.Message);
+            }
 
         }
-            
+        */
         [HttpDelete]
         public IActionResult Delete([FromBody] int id)
         {

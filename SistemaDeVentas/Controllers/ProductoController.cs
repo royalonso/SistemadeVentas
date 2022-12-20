@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SistemaDeVentas.Repositories;
 
-
 namespace SistemaDeVentas.Controllers
 {
     [ApiController]

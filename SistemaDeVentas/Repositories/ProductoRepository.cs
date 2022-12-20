@@ -12,7 +12,6 @@ namespace SistemaDeVentas.Repositories
             var listaProducto = new List<Producto>();
             try
             {
-                //string conectionstring = @"Server=NEXTHP11\SQLEXPRESS;database=SistemaGestion;Trusted_Connection=True;";
                 ConexionDB conexion = new ConexionDB();
                 SqlConnection conecta = conexion.conexionR;
                 var query = "SELECT id,Descripciones,Costo,PrecioVenta,Stock,idUsuario from Producto";
@@ -40,7 +39,7 @@ namespace SistemaDeVentas.Repositories
                     }
                 }
 
-                //}
+                
 
             }
             catch (Exception ex)
@@ -153,9 +152,7 @@ namespace SistemaDeVentas.Repositories
             }
             conecta.Open();
             var query = $"UPDATE Producto SET {String.Join(" ,", CamposAActualizar)} WHERE id = @id";
-            //using SqlCommand comando = new SqlCommand($"UPDATE Producto SET{String.Join(" ,", CamposAActualizar)} WHERE ID = @id",conecta);
-            using SqlCommand comando = new SqlCommand(query, conecta);
-
+                using SqlCommand comando = new SqlCommand(query, conecta);
                 comando.Parameters.Add(new SqlParameter("Descripcion", SqlDbType.VarChar) { Value = ProductoAActualizar.Descripcion });
                 comando.Parameters.Add(new SqlParameter("Costo", SqlDbType.Float) { Value = ProductoAActualizar.Costo });
                 comando.Parameters.Add(new SqlParameter("PrecioVenta", SqlDbType.Float) { Value = ProductoAActualizar.PrecioVenta });
@@ -205,7 +202,7 @@ namespace SistemaDeVentas.Repositories
                 conecta.Close();
             }
         }
-        public bool verificarStock(int id, int stock)  //Verifica si hay stock para vender un producto determinado
+        public bool verificarydescargarStock(int id, int stock)  //Verifica si hay stock para vender un producto determinado y lo descarga
         {
             ConexionDB conexion = new ConexionDB();
             SqlConnection conecta = conexion.conexionR;
@@ -246,6 +243,51 @@ namespace SistemaDeVentas.Repositories
                 conecta.Close();
             }
 
+        }
+        public bool hayStock(int id, int stock)
+        {
+            int id2 = 0;
+            ConexionDB conexion = new ConexionDB();
+            SqlConnection conecta = conexion.conexionR;
+            var query = "SELECT id FROM producto WHERE id = @id AND Stock >= @stock";
+            using (SqlCommand cmd = new SqlCommand(query, conecta))
+            {
+                conecta.Open();
+                cmd.Parameters.Add(new SqlParameter("id", SqlDbType.BigInt) { Value = id });
+                cmd.Parameters.Add(new SqlParameter("stock", SqlDbType.BigInt) { Value = stock });
+                id2 = Convert.ToInt32(cmd.ExecuteScalar());
+                conecta.Close();
+                if (id2 > 0)
+                {                  
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+
+         }
+        public bool descargarStock(int id, int stock)
+        {
+            try
+            {
+                ConexionDB conexion = new ConexionDB();
+                SqlConnection conecta = conexion.conexionR;
+                conecta.Open();
+                var  query = "UPDATE Producto SET stock = stock-@stock WHERE id = @id ";     // Descargo del stock la cantidad vendida
+                SqlCommand comando = new SqlCommand(query, conecta);
+                comando.Parameters.Add(new SqlParameter("id", SqlDbType.Int) { Value = id });
+                comando.Parameters.Add(new SqlParameter("Stock", SqlDbType.Int) { Value = stock });
+                comando.ExecuteNonQuery();
+                conecta.Close();
+                return true;
+
+            }
+            catch 
+            {
+             return false; 
+            }
         }
 
         private Producto obtenerProductoDesdeReader(SqlDataReader dr)

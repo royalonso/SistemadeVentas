@@ -1,7 +1,6 @@
 ﻿using System.Data.SqlClient;
 using System.Configuration;
 using System.Data;
-
 namespace SistemaDeVentas
 {
     
@@ -25,10 +24,7 @@ namespace SistemaDeVentas
         public ConexionDB()
         {
             try
-            {
-                
-                //conexion = _Configuration["ConnectionString:CadenaConexionSQL"];
-                //b = _Configuration.GetValue<string>("ConnectionString");
+            {               
                 conexion = @"Server=NEXTHP11\SQLEXPRESS;database=SistemaGestion;Trusted_Connection=True;";
                 conexionR = new SqlConnection(conexion);
                 conexion2 = @"Server=NEXTHP11\SQLEXPRESS;database=SistemaGestion;Trusted_Connection=True;";

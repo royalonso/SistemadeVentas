@@ -5,20 +5,18 @@ namespace SistemaDeVentas
 {
     public class ProductoVendido
     {
-        //"select Descripciones as Articulo, Pv.Stock as CantidadVendida , P.PrecioVenta, (P.PrecioVenta*Pv.Stock) as TotalVendido
-        //from producto P inner join ProductoVendido Pv on P.Id = Pv.IdProducto";
+
         public int Id { get; set; }
         public int IdProducto { get; set; }
         public int Stock { get; set; }
         public int idVenta { get; set; }
 
         public string Producto { get; set; }  
-        public decimal CantidadVendida { get; set; }
+        public int CantidadVendida { get; set; }
         public decimal PrecioVenta { get; set; }
         public decimal TotalVendido { get; set; }
-        
 
-
+        public int idUsuario { get; set; }
 
         public ProductoVendido()
         {
@@ -31,7 +29,7 @@ namespace SistemaDeVentas
             Stock = stock;
             this.idVenta = idVenta;
         }
-        public ProductoVendido(int id, int idProducto, int stock, int idVenta,string Producto,decimal CantidadVendida,decimal PrecioVenta, decimal TotalVendido)
+        public ProductoVendido(int id, int idProducto, int stock, int idVenta,string Producto,int CantidadVendida,decimal PrecioVenta, decimal TotalVendido, int idUsuario)
         {
             Id = id;
             IdProducto = idProducto;
@@ -41,6 +39,7 @@ namespace SistemaDeVentas
             this.CantidadVendida= CantidadVendida;  
             this.PrecioVenta= PrecioVenta;
             this.TotalVendido = TotalVendido;
+            this.idUsuario = idUsuario;
         }
        
     }
