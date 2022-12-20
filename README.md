@@ -1,3 +1,3 @@
 # SistemadeVentas 
 # Proyecto final
-# Basado en la base de datos proporcionada coder en el script de la clase 13
+# Basado en el Script de la base de datos proporcionada por Coder en la clase 13
