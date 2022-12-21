@@ -5,13 +5,13 @@ namespace SistemaDeVentas
 {
     public class Producto
     {
-        public int Id { get; set; } = 0;
-        public string Descripcion { get; set; } = "";
-        public decimal Costo { get; set; } = decimal.Zero;
-        public decimal PrecioVenta { get; set; } = decimal.Zero;
-        public int Stock { get; set; } = int.MaxValue;
-        public int idUsuario { get; set; } = 0;
-
+        public int Id { get; set; }
+        public string Descripcion { get; set; } = string.Empty;
+        public decimal Costo { get; set; } 
+        public decimal PrecioVenta { get; set; }
+        public int Stock { get; set; } 
+        public int idUsuario { get; set; } 
+        
         public Producto()
         {
 
@@ -25,6 +25,5 @@ namespace SistemaDeVentas
             Stock = stock;
             this.idUsuario = idUsuario;
         }
-
-     }
-}
+    }
+}    

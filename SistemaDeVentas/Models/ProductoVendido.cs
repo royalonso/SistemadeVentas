@@ -17,7 +17,7 @@ namespace SistemaDeVentas
         public decimal TotalVendido { get; set; }
 
         public int idUsuario { get; set; }
-
+       // public Producto? producto { get; set; } //nuevo para venta
         public ProductoVendido()
         {
 

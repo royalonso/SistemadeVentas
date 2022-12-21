@@ -97,10 +97,10 @@ namespace SistemaDeVentas.Repositories
             {
                 ConexionDB conexion = new ConexionDB();
                 SqlConnection conecta = conexion.conexionR;
-                var query = @"INSERT INTO Producto(Descripciones,Costo,PrecioVenta,Stock,IdUsuario) VALUES(@Descripcion,@Costo,@PrecioVenta,@Stock,@idUsuario)";
+                var query = @"INSERT INTO Producto(Descripciones,Costo,PrecioVenta,Stock,IdUsuario) VALUES(@Descripcion,@Costo,@PrecioVenta,@Stock,@idUsuario)"; 
                 SqlCommand comando = new SqlCommand(query, conecta);
                 conecta.Open();
-                comando.Parameters.Add(new SqlParameter("Descripciones", SqlDbType.VarChar) { Value = producto.Descripcion });
+                comando.Parameters.Add(new SqlParameter("Descripcion", SqlDbType.VarChar) { Value = producto.Descripcion });
                 comando.Parameters.Add(new SqlParameter("Costo", SqlDbType.Float) { Value = producto.Costo });
                 comando.Parameters.Add(new SqlParameter("PrecioVenta", SqlDbType.Float) { Value = producto.PrecioVenta });
                 comando.Parameters.Add(new SqlParameter("Stock", SqlDbType.Int) { Value = producto.Stock });

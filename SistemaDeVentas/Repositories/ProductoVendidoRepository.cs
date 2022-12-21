@@ -31,8 +31,8 @@ namespace SistemaDeVentas.Repositories
                                 productov.Producto = Convert.ToString(dr["Articulo"]); //nuevo
                                 productov.Stock = Convert.ToInt32(dr["StockActual"]);
                                 productov.CantidadVendida = Convert.ToInt32(dr["CantidadVendida"]);//nuevo
-                                productov.PrecioVenta = Convert.ToInt32(dr["PrecioVenta"]);//nuevo
-                                productov.TotalVendido = Convert.ToInt32(dr["TotalVendido"]);//nuevo
+                                productov.PrecioVenta = Convert.ToDecimal(dr["PrecioVenta"]);//nuevo
+                                productov.TotalVendido = Convert.ToDecimal(dr["TotalVendido"]);//nuevo
                                 productov.idVenta = Convert.ToInt32(dr["NrodeVenta"]);
                                 //productov.idVenta = Convert.ToInt32(dr["idVenta"]); ;
                                 listaProductoV.Add(productov);
@@ -78,8 +78,8 @@ namespace SistemaDeVentas.Repositories
                                 productov.Producto = Convert.ToString(dr["Articulo"]);
                                 productov.Stock = Convert.ToInt32(dr["StockActual"]);
                                 productov.CantidadVendida = Convert.ToInt32(dr["CantidadVendida"]);
-                                productov.PrecioVenta = Convert.ToInt32(dr["PrecioVenta"]);
-                                productov.TotalVendido = Convert.ToInt32(dr["TotalVendido"]);
+                                productov.PrecioVenta = Convert.ToDecimal(dr["PrecioVenta"]);
+                                productov.TotalVendido = Convert.ToDecimal(dr["TotalVendido"]);
                                 productov.idVenta = Convert.ToInt32(dr["NrodeVenta"]);
                                 productov.idUsuario = Convert.ToInt32(dr["Usuario"]);
                                 listaProductoV.Add(productov);
@@ -109,10 +109,8 @@ namespace SistemaDeVentas.Repositories
                     Venta venta2 = new Venta();
                     venta2.Comentarios = $"Vendida";
                     venta2.idUsuario = 1;
-                    bool p = venta1.CrearVenta(venta2);
-
+                    bool p = venta1.CrearVentaPV(venta2);
                     int idVenta = venta1.DameUltimoID(); //Obtengo el id de ventas
-
                     ConexionDB conexion = new ConexionDB();   //Cargo el producto vendido
                     SqlConnection conecta = conexion.conexionR;
                     var query = @"INSERT INTO ProductoVendido(Stock,idProducto,Idventa) VALUES(@Stock,@IdProducto,@IdVenta)";
