@@ -20,7 +20,7 @@ namespace SistemaDeVentas.Repositories
                 {
                     conecta.Open();
                     cmd.Parameters.Add(new SqlParameter("NombreUsuario", SqlDbType.VarChar) { Value = lusuario.NombreUsuario });
-                    cmd.Parameters.Add(new SqlParameter("Contrasenia", SqlDbType.VarChar) { Value = lusuario.Contraseña});
+                    cmd.Parameters.Add(new SqlParameter("Contrasenia", SqlDbType.VarChar) { Value = lusuario.Contrasenia});
                     using (SqlDataReader dr = cmd.ExecuteReader())
                     {
                         return dr.HasRows;

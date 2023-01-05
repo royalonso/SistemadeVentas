@@ -96,7 +96,7 @@ namespace SistemaDeVentas.Repositories
             try
             {
                 ConexionDB conexion = new ConexionDB();
-                SqlConnection conecta = conexion.conexionR;
+                SqlConnection conecta = conexion.conexionR3;
                 var query = @"INSERT INTO Producto(Descripciones,Costo,PrecioVenta,Stock,IdUsuario) VALUES(@Descripcion,@Costo,@PrecioVenta,@Stock,@idUsuario)"; 
                 SqlCommand comando = new SqlCommand(query, conecta);
                 conecta.Open();
@@ -120,38 +120,40 @@ namespace SistemaDeVentas.Repositories
             SqlConnection conecta = conexion.conexionR;
             ProductoAActualizar.Id = id;
             Producto producto = obtenerProducto(ProductoAActualizar.Id);
-            List<string> CamposAActualizar = new List<string>();
-            if (producto.Descripcion != ProductoAActualizar.Descripcion && !string.IsNullOrEmpty(ProductoAActualizar.Descripcion));
+            try
             {
-                CamposAActualizar.Add("Descripciones = @descripcion");
-                producto.Descripcion = ProductoAActualizar.Descripcion;
-            }
-            if (producto.Costo != ProductoAActualizar.Costo && ProductoAActualizar.Costo >0)
-            {
-                CamposAActualizar.Add("Costo = @costo");
-                producto.Costo = ProductoAActualizar.Costo;
-            }
-            if (producto.PrecioVenta != ProductoAActualizar.PrecioVenta && ProductoAActualizar.PrecioVenta > 0)
-            {
-                CamposAActualizar.Add("precioventa = @precioventa");
-                producto.PrecioVenta = ProductoAActualizar.PrecioVenta;
-            }
-            if (producto.Stock != ProductoAActualizar.Stock && ProductoAActualizar.Stock > 0)
-            {
-                CamposAActualizar.Add("stock = @stock");
-                producto.Stock = ProductoAActualizar.Stock;
-            }
-            if (producto.idUsuario != ProductoAActualizar.idUsuario && ProductoAActualizar.idUsuario > 0)
-            {
-                CamposAActualizar.Add("idusuario = @idusuario");
-                producto.Stock = ProductoAActualizar.Stock;
-            }
-            if (CamposAActualizar.Count == 0)
-            {
-                throw new Exception("No hay Productos para Actualizar");
-            }
-            conecta.Open();
-            var query = $"UPDATE Producto SET {String.Join(" ,", CamposAActualizar)} WHERE id = @id";
+                List<string> CamposAActualizar = new List<string>();
+                if (producto.Descripcion != ProductoAActualizar.Descripcion && !string.IsNullOrEmpty(ProductoAActualizar.Descripcion)) ;
+                {
+                    CamposAActualizar.Add("Descripciones = @descripcion");
+                    producto.Descripcion = ProductoAActualizar.Descripcion;
+                }
+                if (producto.Costo != ProductoAActualizar.Costo && ProductoAActualizar.Costo > 0)
+                {
+                    CamposAActualizar.Add("Costo = @costo");
+                    producto.Costo = ProductoAActualizar.Costo;
+                }
+                if (producto.PrecioVenta != ProductoAActualizar.PrecioVenta && ProductoAActualizar.PrecioVenta > 0)
+                {
+                    CamposAActualizar.Add("precioventa = @precioventa");
+                    producto.PrecioVenta = ProductoAActualizar.PrecioVenta;
+                }
+                if (producto.Stock != ProductoAActualizar.Stock && ProductoAActualizar.Stock > 0)
+                {
+                    CamposAActualizar.Add("stock = @stock");
+                    producto.Stock = ProductoAActualizar.Stock;
+                }
+                if (producto.idUsuario != ProductoAActualizar.idUsuario && ProductoAActualizar.idUsuario > 0)
+                {
+                    CamposAActualizar.Add("idusuario = @idusuario");
+                    producto.Stock = ProductoAActualizar.Stock;
+                }
+                if (CamposAActualizar.Count == 0)
+                {
+                    throw new Exception("No hay Productos para Actualizar");
+                }
+                conecta.Open();
+                var query = $"UPDATE Producto SET {String.Join(" ,", CamposAActualizar)} WHERE id = @id";
                 using SqlCommand comando = new SqlCommand(query, conecta);
                 comando.Parameters.Add(new SqlParameter("Descripcion", SqlDbType.VarChar) { Value = ProductoAActualizar.Descripcion });
                 comando.Parameters.Add(new SqlParameter("Costo", SqlDbType.Float) { Value = ProductoAActualizar.Costo });
@@ -160,10 +162,15 @@ namespace SistemaDeVentas.Repositories
                 comando.Parameters.Add(new SqlParameter("id", SqlDbType.BigInt) { Value = ProductoAActualizar.Id });
                 comando.Parameters.Add(new SqlParameter("idUsuario", SqlDbType.BigInt) { Value = ProductoAActualizar.idUsuario });
                 comando.ExecuteNonQuery();
-                conecta.Close();
-            
-           
-            return producto;
+                //conecta.Close();
+
+                return producto;
+            }
+            catch(Exception ex)
+            {
+                throw new Exception("Error al Actualizar");
+            }
+
 
         }
 
@@ -195,12 +202,13 @@ namespace SistemaDeVentas.Repositories
             catch
             {
                 return null;
-                throw;
+                throw new Exception("No se pudo Obtener el Producto");
             }
             finally
             {
                 conecta.Close();
             }
+
         }
         public bool verificarydescargarStock(int id, int stock)  //Verifica si hay stock para vender un producto determinado y lo descarga
         {
@@ -250,37 +258,49 @@ namespace SistemaDeVentas.Repositories
             ConexionDB conexion = new ConexionDB();
             SqlConnection conecta = conexion.conexionR;
             var query = "SELECT id FROM producto WHERE id = @id AND Stock >= @stock";
-            using (SqlCommand cmd = new SqlCommand(query, conecta))
+            try
             {
-                conecta.Open();
-                cmd.Parameters.Add(new SqlParameter("id", SqlDbType.BigInt) { Value = id });
-                cmd.Parameters.Add(new SqlParameter("stock", SqlDbType.BigInt) { Value = stock });
-                id2 = Convert.ToInt32(cmd.ExecuteScalar());
-                conecta.Close();
-                if (id2 > 0)
-                {                  
-                    return true;
-                }
-                else
+                using (SqlCommand cmd = new SqlCommand(query, conecta))
                 {
-                    return false;
+                    conecta.Open();
+                    cmd.Parameters.Add(new SqlParameter("id", SqlDbType.BigInt) { Value = id });
+                    cmd.Parameters.Add(new SqlParameter("stock", SqlDbType.BigInt) { Value = stock });
+                    id2 = Convert.ToInt32(cmd.ExecuteScalar());
+                    //conecta.Close();
+                    if (id2 > 0)
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
                 }
             }
+            catch
+            {
+                throw;
+            }
+            finally
+            {
+                conecta.Close();
+            }
+ 
 
          }
         public bool descargarStock(int id, int stock)
         {
+            ConexionDB conexion = new ConexionDB();
+            SqlConnection conecta = conexion.conexionR;
             try
             {
-                ConexionDB conexion = new ConexionDB();
-                SqlConnection conecta = conexion.conexionR;
                 conecta.Open();
                 var  query = "UPDATE Producto SET stock = stock-@stock WHERE id = @id ";     // Descargo del stock la cantidad vendida
                 SqlCommand comando = new SqlCommand(query, conecta);
                 comando.Parameters.Add(new SqlParameter("id", SqlDbType.Int) { Value = id });
                 comando.Parameters.Add(new SqlParameter("Stock", SqlDbType.Int) { Value = stock });
                 comando.ExecuteNonQuery();
-                conecta.Close();
+                //conecta.Close();
                 return true;
 
             }
@@ -288,18 +308,31 @@ namespace SistemaDeVentas.Repositories
             {
              return false; 
             }
+            finally
+            {
+                conecta.Close();
+            }
+
         }
 
         private Producto obtenerProductoDesdeReader(SqlDataReader dr)
         {
-
             Producto producto = new Producto();
-            producto.Id = int.Parse(dr["Id"].ToString());
-            producto.Descripcion = dr["Descripciones"].ToString();
-            producto.Costo = decimal.Parse(dr["Costo"].ToString());
-            producto.PrecioVenta = decimal.Parse(dr["PrecioVenta"].ToString());
-            producto.Stock = int.Parse(dr["Stock"].ToString());
-            return producto;
+            try
+            {
+                
+                producto.Id = int.Parse(dr["Id"].ToString());
+                producto.Descripcion = dr["Descripciones"].ToString();
+                producto.Costo = decimal.Parse(dr["Costo"].ToString());
+                producto.PrecioVenta = decimal.Parse(dr["PrecioVenta"].ToString());
+                producto.Stock = int.Parse(dr["Stock"].ToString());
+                return producto;
+            }
+            catch
+            {
+                return producto;
+            }
+
         }
     }
 }

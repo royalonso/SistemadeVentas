@@ -5,7 +5,6 @@ namespace SistemaDeVentas.Repositories
 {
     public class ProductoVendidoRepository:ProductoVendido
     {
-
         public static List<ProductoVendido> DevolverProductoVendido()
         {
             var listaProductoV = new List<ProductoVendido>();
@@ -240,6 +239,7 @@ namespace SistemaDeVentas.Repositories
             {
                 throw;
             }
+
 
         }
         public bool ReponerStockProducto2(int id)   // Creo un dr con los Prod. Vendidos para una venta y repongo el stock antes de borrarlos
